@@ -17,12 +17,12 @@ module.exports = class Admin {
     }
 
     static getAdminById(id) {
-        const query = `SELECT * FROM admin where id = '${id}'`;
+        const query = `SELECT * FROM admin WHERE id = '${id}'`;
         return db.execute(query);
     }
 
     static getAdminByEmail(email) {
-        const query = `SELECT * FROM admin where email = '${email}'`;
+        const query = `SELECT * FROM admin WHERE email = '${email}'`;
         return db.execute(query);
     }
 

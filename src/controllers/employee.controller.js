@@ -72,7 +72,7 @@ exports.register = (req, res) => {
 exports.login = async function (req, res) {
   Employee.getEmployeeByEmail(req.body.email)
     .then(([employee]) => {
-      if (employee) {
+      if (employee.length) {
         var hashVerify = crypto
           .pbkdf2Sync(req.body.password, employee[0].salt, 10000, 64, "sha512")
           .toString("hex");
@@ -156,7 +156,7 @@ exports.update = (req, res) => {
       message: "You are not the owner of this account",
     });
   }
-  Employee.getEmployeeByEmail(req.body.email)
+  Employee.getEmployeeById(req.params.id)
     .then(([employee]) => {
       let salt;
       let hash;
@@ -166,7 +166,7 @@ exports.update = (req, res) => {
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
           .toString("hex");
       }
-      if (employee) {
+      if (employee.length) {
         const updatedEmployee = new Employee({
           name: req.body.name || employee[0].name,
           email: req.body.email || employee[0].email,
@@ -205,7 +205,7 @@ exports.update = (req, res) => {
         return res.status(200).json({
           code: 200,
           success: false,
-          message: "This email not registered",
+          message: "This customer not found",
         });
       }
     })

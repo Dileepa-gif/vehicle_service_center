@@ -106,17 +106,17 @@ const authMiddleware = (status_arr) => {
         try {
           const verification = jsonwebtoken.verify(tokenParts[1], process.env.ACCESS_TOKEN_SECRET);
           var temp = true;
+          var status_list = '';
           status_arr.forEach((status) => {
-            console.log(status)
+            status_list=status_list + ', ' +status
             if(verification.sub.status=== status){
               req.jwt = verification;
               temp = false;
               next();
             }
           });
-          console.log("status")
           if(temp){
-            res.status(200).json({ code :200, success: false, message: "You are not an " +  verification.sub.status});
+            res.status(200).json({ code :200, success: false, message: "You are not" +  status_list});
           }
   
         } catch (err) {

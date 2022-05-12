@@ -13,7 +13,7 @@ module.exports = class UpgradeType {
     }
 
     static getUpgradeTypeById(id) {
-        const query = `SELECT * FROM upgrade_type where id = '${id}'`;
+        const query = `SELECT * FROM upgrade_type WHERE id = '${id}'`;
         return db.execute(query);
     }
 

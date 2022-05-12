@@ -13,7 +13,12 @@ module.exports = class TimeSlot {
     }
 
     static getTimeSlotById(id) {
-        const query = `SELECT * FROM time_slot where id = '${id}'`;
+        const query = `SELECT * FROM time_slot WHERE id = '${id}'`;
+        return db.execute(query);
+    }
+
+    static getTimeSlotByHour(hour) {
+        const query = `SELECT *  FROM time_slot WHERE start <= '${hour}' AND  end > '${hour}' `;
         return db.execute(query);
     }
 

@@ -70,7 +70,7 @@ exports.register = (req, res) => {
 exports.login = async function (req, res) {
   Admin.getAdminByEmail(req.body.email)
     .then(([admin]) => {
-      if (admin) {
+      if (admin.length) {
         var hashVerify = crypto
           .pbkdf2Sync(req.body.password, admin[0].salt, 10000, 64, "sha512")
           .toString("hex");
@@ -154,7 +154,7 @@ exports.update = (req, res) => {
       message: "You are not the owner of this account",
     });
   }
-  Admin.getAdminByEmail(req.body.email)
+  Admin.getAdminById(req.params.id)
   .then(([admin]) => {
     let salt;
     let hash;
@@ -164,7 +164,7 @@ exports.update = (req, res) => {
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
           .toString("hex");
     }
-    if (admin) {
+    if (admin.length) {
       const updatedAdmin = new Admin({
         name: req.body.name || admin[0].name,
         email: req.body.email || admin[0].email,
@@ -203,7 +203,7 @@ exports.update = (req, res) => {
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "This email not registered",
+        message: "This admin not found",
       });
     }
   })
