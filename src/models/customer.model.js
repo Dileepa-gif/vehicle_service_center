@@ -17,12 +17,12 @@ module.exports = class Customer {
     }
 
     static getCustomerById(id) {
-        const query = `SELECT * FROM customer where id = '${id}'`;
+        const query = `SELECT * FROM customer WHERE id = '${id}'`;
         return db.execute(query);
     }
 
     static getCustomerByEmail(email) {
-        const query = `SELECT * FROM customer where email = '${email}'`;
+        const query = `SELECT * FROM customer WHERE email = '${email}'`;
         return db.execute(query);
     }
 

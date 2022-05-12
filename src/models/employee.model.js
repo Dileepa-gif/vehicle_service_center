@@ -17,12 +17,12 @@ module.exports = class Employee {
     }
 
     static getEmployeeById(id) {
-        const query = `SELECT * FROM employee where id = '${id}'`;
+        const query = `SELECT * FROM employee WHERE id = '${id}'`;
         return db.execute(query);
     }
 
     static getEmployeeByEmail(email) {
-        const query = `SELECT * FROM employee where email = '${email}'`;
+        const query = `SELECT * FROM employee WHERE email = '${email}'`;
         return db.execute(query);
     }
 

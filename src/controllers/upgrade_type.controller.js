@@ -34,26 +34,23 @@ exports.create = (req, res) => {
 };
 
 exports.getAllUpgradeTypes = (req, res) => {
-  res.render('admin_service', {
-    pageTitle: "Manage Employees",
-    t: false
-});
-  // UpgradeType.getAllUpgradeTypes()
-  //   .then(([rows]) => {
-  //     return res.status(200).json({
-  //       code: 200,
-  //       success: true,
-  //       data: rows,
-  //     });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //     return res.status(200).json({
-  //       code: 200,
-  //       success: false,
-  //       message: error.message,
-  //     });
-  //   });
+
+  UpgradeType.getAllUpgradeTypes()
+    .then(([rows]) => {
+      return res.status(200).json({
+        code: 200,
+        success: true,
+        data: rows,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
+      });
+    });
 };
 
 exports.getUpgradeTypeById = (req, res) => {
