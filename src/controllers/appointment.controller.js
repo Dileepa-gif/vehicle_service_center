@@ -2,25 +2,20 @@ const Appointment = require("../models/appointment.model");
 const TimeSlot = require("../models/time_slot.model");
 
 exports.create = (req, res) => {
-  const pick_datetime = new Date(req.body.pick_datetime);
-  let hour = pick_datetime.getHours();
   let number_of_vehicles = 0;
-  console.log("hour = ", hour);
 
-  TimeSlot.getTimeSlotByHour(hour)
+  TimeSlot.getTimeSlotById(req.body.time_slot_id)
     .then(([time_slot]) => {
       if (time_slot.length) {
         number_of_vehicles = time_slot[0].number_of_vehicles;
-        console.log("number_of_vehicles = ", time_slot);
-        Appointment.getAppointmentsCountByTimeSlotId(time_slot[0].id)
+        Appointment.getAppointmentsCountByTimeSlotId(req.body.time_slot_id)
           .then(([appointments]) => {
             if (appointments[0].count < number_of_vehicles) {
               const newAppointment = new Appointment({
                 status: "Reserved",
-                pick_datetime: req.body.pick_datetime,
                 vehicle_reg_number: req.body.vehicle_reg_number,
-                customer_id : req.jwt.sub.id,
-                time_slot_id: time_slot[0].id,
+                customer_id: req.jwt.sub.id,
+                time_slot_id: req.body.time_slot_id,
                 upgrade_type_id: req.body.upgrade_type_id,
               });
               newAppointment
@@ -121,140 +116,79 @@ exports.getAppointmentById = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  if (req.body.pick_datetime) {
-    const pick_datetime = new Date(req.body.pick_datetime);
-    let hour = pick_datetime.getHours();
-    let number_of_vehicles = 0;
-    console.log(hour);
+  let number_of_vehicles = 0;
+  TimeSlot.getTimeSlotById(req.body.time_slot_id)
+    .then(([time_slot]) => {
+      if (time_slot.length) {
+        number_of_vehicles = time_slot[0].number_of_vehicles;
 
-    TimeSlot.getTimeSlotByHour(hour)
-      .then(([time_slot]) => {
-        if (time_slot.length) {
-          number_of_vehicles = time_slot[0].number_of_vehicles;
-
-          Appointment.getAppointmentsCountByTimeSlotId(time_slot[0].id)
-            .then(([appointments]) => {
-              if (appointments[0].count < number_of_vehicles) {
-                const updatedAppointment = new Appointment({
-                  status: "Reserved",
-                  pick_datetime: req.body.pick_datetime,
-                  vehicle_reg_number: req.body.vehicle_reg_number,
-                  customer_id : req.jwt.sub.id,
-                  time_slot_id: time_slot[0].id,
-                  upgrade_type_id: req.body.upgrade_type_id,
-                });
-                updatedAppointment
-                  .update(req.params.id, req.jwt.sub.id)
-                  .then(([result]) => {
-                    if (result.affectedRows === 1) {
-                      return res.status(200).json({
-                        code: 200,
-                        success: true,
-                        message: "Successfully updated",
-                      });
-                    } else {
-                      return res.status(200).json({
-                        code: 200,
-                        success: false,
-                        message: "Please try again",
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
+        Appointment.getAppointmentsCountByTimeSlotId(req.body.time_slot_id)
+          .then(([appointments]) => {
+            if (appointments[0].count < number_of_vehicles) {
+              const updatedAppointment = new Appointment({
+                status: "Reserved",
+                vehicle_reg_number: req.body.vehicle_reg_number,
+                customer_id: req.jwt.sub.id,
+                time_slot_id: time_slot[0].id,
+                upgrade_type_id: req.body.upgrade_type_id,
+              });
+              updatedAppointment
+                .update(req.params.id, req.jwt.sub.id)
+                .then(([result]) => {
+                  if (result.affectedRows === 1) {
+                    return res.status(200).json({
+                      code: 200,
+                      success: true,
+                      message: "Successfully updated",
+                    });
+                  } else {
                     return res.status(200).json({
                       code: 200,
                       success: false,
-                      message: error.message,
+                      message: "Please try again",
                     });
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                  return res.status(200).json({
+                    code: 200,
+                    success: false,
+                    message: error.message,
                   });
-              } else {
-                return res.status(200).json({
-                  code: 200,
-                  success: false,
-                  message: "Time slot is not available",
                 });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
+            } else {
               return res.status(200).json({
                 code: 200,
                 success: false,
-                message: error.message,
+                message: "Time slot is not available",
               });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: error.message,
             });
-        } else {
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: "Time slot is not a working time",
           });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
-          message: error.message,
+          message: "Time slot is not a working time",
         });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
       });
-  } else {
-    Appointment.getAppointmentById(req.params.id)
-      .then(([appointment]) => {
-        if (appointment.length) {
-          const updatedAppointment = new Appointment({
-            status: "Reserved",
-            pick_datetime: appointment[0].pick_datetime,
-            vehicle_reg_number: req.body.vehicle_reg_number,
-            customer_id : req.jwt.sub.id,
-            time_slot_id: appointment[0].time_slot_id,
-            upgrade_type_id: req.body.upgrade_type_id,
-          });
-          updatedAppointment
-            .update(req.params.id, req.jwt.sub.id)
-            .then(([result]) => {
-              if (result.affectedRows === 1) {
-                return res.status(200).json({
-                  code: 200,
-                  success: true,
-                  message: "Successfully updated",
-                });
-              } else {
-                return res.status(200).json({
-                  code: 200,
-                  success: false,
-                  message: "Please try again",
-                });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-              return res.status(200).json({
-                code: 200,
-                success: false,
-                message: error.message,
-              });
-            });
-        } else {
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: "This email not registered",
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.status(200).json({
-          code: 200,
-          success: false,
-          message: error.message,
-        });
-      });
-  }
-
+    });
 };
 
 exports.delete = (req, res) => {

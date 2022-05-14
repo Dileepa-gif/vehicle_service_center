@@ -3,7 +3,6 @@ const db = require('../util/database');
 module.exports = class Appointment {
     constructor(appointment) {
         this.status = appointment.status;
-        this.pick_datetime = appointment.pick_datetime;
         this.vehicle_reg_number = appointment.vehicle_reg_number;
         this.customer_id  = appointment.customer_id ;
         this.time_slot_id  = appointment.time_slot_id ;
@@ -31,14 +30,14 @@ module.exports = class Appointment {
     }
 
     create() {
-        const query = `INSERT INTO appointment (status, pick_datetime, vehicle_reg_number, customer_id, time_slot_id, upgrade_type_id) VALUE(?,?,?,?,?,?)`;
-        return db.execute(query, [this.status, this.pick_datetime, this.vehicle_reg_number, this.customer_id, this.time_slot_id, this.upgrade_type_id]);
+        const query = `INSERT INTO appointment (status, vehicle_reg_number, customer_id, time_slot_id, upgrade_type_id) VALUE(?,?,?,?,?)`;
+        return db.execute(query, [this.status, this.vehicle_reg_number, this.customer_id, this.time_slot_id, this.upgrade_type_id]);
     }
 
 
     update(id, customer_id) {
-        const query = `UPDATE appointment set status = ?, pick_datetime = ?, vehicle_reg_number = ?, customer_id = ?, time_slot_id = ?, upgrade_type_id = ? WHERE id = ?  AND customer_id = ?`;
-        return db.execute(query, [this.status, this.pick_datetime, this.vehicle_reg_number, this.customer_id, this.time_slot_id, this.upgrade_type_id, id, customer_id]);
+        const query = `UPDATE appointment set status = ?,  vehicle_reg_number = ?, customer_id = ?, time_slot_id = ?, upgrade_type_id = ? WHERE id = ?  AND customer_id = ?`;
+        return db.execute(query, [this.status, this.vehicle_reg_number, this.customer_id, this.time_slot_id, this.upgrade_type_id, id, customer_id]);
     }
     
 

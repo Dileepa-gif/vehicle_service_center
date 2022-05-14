@@ -1,7 +1,7 @@
 const Employee = require("../models/employee.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
-const defaultPassword = "12345678";
+const { emailSender} = require("../util/emailService");
 
 exports.register = (req, res) => {
   Employee.getEmployeeByEmail(req.body.email)
@@ -13,9 +13,10 @@ exports.register = (req, res) => {
           message: "This email already registered",
         });
       } else {
+        var randomPassword = Math.random().toString(36).slice(-8);
         const salt = crypto.randomBytes(32).toString("hex");
         const hash = crypto
-          .pbkdf2Sync(defaultPassword, salt, 10000, 64, "sha512")
+          .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
           .toString("hex");
         const newEmployee = new Employee({
           name: req.body.name,
@@ -34,6 +35,7 @@ exports.register = (req, res) => {
                 id: result.insertId,
                 ...newEmployee,
               }, "EMPLOYEE");
+              emailSender(newEmployee,randomPassword);
               return res.status(200).json({
                 code: 200,
                 success: true,
