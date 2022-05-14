@@ -1,5 +1,6 @@
 const Appointment = require("../models/appointment.model");
 const TimeSlot = require("../models/time_slot.model");
+const Service = require("../models/service.model");
 
 exports.create = (req, res) => {
   let number_of_vehicles = 0;
@@ -216,4 +217,43 @@ exports.delete = (req, res) => {
         message: error.message,
       });
     });
+};
+
+exports.changeStatus = (req, res) => {
+  Appointment.changeStatus(req.params.id).then(([result]) => {
+    if (result.affectedRows === 1) {    
+      const newService = new Service({
+        is_done: 0,
+        is_paid: 0,
+        payment_method: null,
+        discount: 0,
+        rating: 0,
+        appointment_id: req.params.id,
+        employee_id: req.jwt.sub.id,
+      });
+      newService
+        .create()
+        .then(([result]) => {
+          if (result.affectedRows === 1) {
+            return res.status(200).json({
+              code: 200,
+              success: true,
+              message: "Successfully status changed",
+            });
+          } else {
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: "Please try again",
+            });
+          }
+        })
+    } else {
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: "Please try again",
+      });
+    }
+  });
 };
