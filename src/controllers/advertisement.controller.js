@@ -1,70 +1,31 @@
-const Appointment = require("../models/appointment.model");
-const TimeSlot = require("../models/time_slot.model");
-const Service = require("../models/service.model");
+const Advertisement = require("../models/advertisement.model");
 
 exports.create = (req, res) => {
-  let number_of_vehicles = 0;
-
-  TimeSlot.getTimeSlotByHours(req.body.start_hour, req.body.end_hour)
-    .then(([time_slot]) => {
-      if (time_slot.length) {
-        number_of_vehicles = time_slot[0].number_of_vehicles;
-        Appointment.getAppointmentsCountByTimeSlotId(req.body.time_slot_id)
-          .then(([appointments]) => {
-            if (appointments[0].count < number_of_vehicles) {
-              const newAppointment = new Appointment({
-                status: "Reserved",
-                vehicle_id: req.body.vehicle_id,
-                customer_id: req.jwt.sub.id,
-                time_slot_id: req.body.time_slot_id,
-                upgrade_type_id: req.body.upgrade_type_id,
-              });
-              newAppointment
-                .create()
-                .then(([result]) => {
-                  if (result.affectedRows === 1) {
-                    return res.status(200).json({
-                      code: 200,
-                      success: true,
-                      message: "Successfully created",
-                    });
-                  } else {
-                    return res.status(200).json({
-                      code: 200,
-                      success: false,
-                      message: "Please try again",
-                    });
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                  return res.status(200).json({
-                    code: 200,
-                    success: false,
-                    message: error.message,
-                  });
-                });
-            } else {
-              return res.status(200).json({
-                code: 200,
-                success: false,
-                message: "Time slot is not available",
-              });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            return res.status(200).json({
-              code: 200,
-              success: false,
-              message: error.message,
-            });
-          });
+  const newAdvertisement = new Advertisement({
+    customer_id : req.jwt.sub.id,
+    vehicle_type : req.body.vehicle_type,
+    brand : req.body.brand,
+    model : req.bod.model,
+    year_of_manufacture : req.body.year_of_manufacture,
+    condition : req.body.condition,
+    description : req.body.description,
+    price : req.body.price,
+    is_sold : 0
+  });
+  newAdvertisement
+    .create()
+    .then(([result]) => {
+      if (result.affectedRows === 1) {
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          message: "Successfully created",
+        });
       } else {
         return res.status(200).json({
           code: 200,
           success: false,
-          message: "Time slot is not a working time",
+          message: "Please try again",
         });
       }
     })
@@ -78,8 +39,8 @@ exports.create = (req, res) => {
     });
 };
 
-exports.getAllAppointments = (req, res) => {
-  Appointment.getAllAppointments()
+exports.getAllAdvertisements = (req, res) => {
+  Advertisement.getAllAdvertisements()
     .then(([rows]) => {
       return res.status(200).json({
         code: 200,
@@ -97,8 +58,8 @@ exports.getAllAppointments = (req, res) => {
     });
 };
 
-exports.getAppointmentById = (req, res) => {
-  Appointment.getAppointmentById(req.params.id)
+exports.getAdvertisementById = (req, res) => {
+  Advertisement.getAdvertisementById(req.params.id)
     .then(([rows]) => {
       return res.status(200).json({
         code: 200,
@@ -123,17 +84,17 @@ exports.update = (req, res) => {
       if (time_slot.length) {
         number_of_vehicles = time_slot[0].number_of_vehicles;
 
-        Appointment.getAppointmentsCountByTimeSlotId(req.body.time_slot_id)
-          .then(([appointments]) => {
-            if (appointments[0].count < number_of_vehicles) {
-              const updatedAppointment = new Appointment({
+        Advertisement.getAdvertisementsCountByTimeSlotId(req.body.time_slot_id)
+          .then(([advertisements]) => {
+            if (advertisements[0].count < number_of_vehicles) {
+              const updatedAdvertisement = new Advertisement({
                 status: "Reserved",
-                vehicle_id: req.body.vehicle_id,
+                vehicle_reg_number: req.body.vehicle_reg_number,
                 customer_id: req.jwt.sub.id,
                 time_slot_id: time_slot[0].id,
                 upgrade_type_id: req.body.upgrade_type_id,
               });
-              updatedAppointment
+              updatedAdvertisement
                 .update(req.params.id, req.jwt.sub.id)
                 .then(([result]) => {
                   if (result.affectedRows === 1) {
@@ -193,7 +154,7 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-  Appointment.delete(req.params.id)
+  Advertisement.delete(req.params.id)
     .then(([result]) => {
       if (result.affectedRows === 1) {
         return res.status(200).json({
@@ -220,7 +181,7 @@ exports.delete = (req, res) => {
 };
 
 exports.changeStatus = (req, res) => {
-  Appointment.changeStatus(req.params.id).then(([result]) => {
+  Advertisement.changeStatus(req.params.id).then(([result]) => {
     if (result.affectedRows === 1) {    
       const newService = new Service({
         is_done: 0,
@@ -228,7 +189,7 @@ exports.changeStatus = (req, res) => {
         payment_method: null,
         discount: 0,
         rating: 0,
-        appointment_id: req.params.id,
+        advertisement_id: req.params.id,
         employee_id: req.jwt.sub.id,
       });
       newService

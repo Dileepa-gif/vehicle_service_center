@@ -17,10 +17,10 @@ module.exports = class TimeSlot {
         return db.execute(query);
     }
 
-    // static getTimeSlotByHour(hour) {
-    //     const query = `SELECT *  FROM time_slot WHERE start <= '${hour}' AND  end > '${hour}' `;
-    //     return db.execute(query);
-    // }
+    static getTimeSlotByHours(start_hour, end_hour) {
+        const query = `SELECT MIN(id), * FROM time_slot WHERE start >= '${start_hour}' AND end < '${end_hour}';`;
+        return db.execute(query);
+    }
 
     update(id) {
         const query = `UPDATE time_slot set start = ?, end = ?, number_of_vehicles = ? WHERE id = ? `;

@@ -1,8 +1,9 @@
 const Customer = require("../models/customer.model");
+const Vehicle = require("../models/vehicle.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
 
-exports.register = (req, res) => {
+exports.signUp = (req, res) => {
   Customer.getCustomerByEmail(req.body.email)
     .then(([result]) => {
       if (result.length) {
@@ -17,13 +18,14 @@ exports.register = (req, res) => {
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
           .toString("hex");
         const newCustomer = new Customer({
-          name: req.body.name,
+          first_name: null,
+          last_name: null,
           email: req.body.email,
           hash: hash,
           salt: salt,
-          nic_number: req.body.nic_number,
-          phone_number: req.body.phone_number,
-          address: req.body.address,
+          contact_number: null,
+          nic_number: null,
+          is_completed: 0,
         });
         newCustomer
           .create()
@@ -65,6 +67,107 @@ exports.register = (req, res) => {
         message: error.message,
       });
     });
+};
+
+
+exports.register = (req, res) => {
+  if (parseInt(req.jwt.sub.id) !== parseInt(req.params.id)) {
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: "You are not the owner of this account",
+    });
+  }
+  Customer.getCustomerById(req.params.id)
+  .then(([customer]) => {
+    let salt;
+    let hash;
+    if(req.body.password){
+      salt = crypto.randomBytes(32).toString("hex");
+      hash = crypto
+          .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
+          .toString("hex");
+    }
+    if (customer.length) {
+      const updatedCustomer = new Customer({
+        first_name: req.body.first_name || customer[0].first_name,
+        last_name: req.body.last_name || customer[0].last_name,
+        hash: hash || customer[0].hash,
+        salt: salt || customer[0].salt,
+        contact_number: req.body.contact_number || customer[0].contact_number,
+        nic_number: req.body.nic_number || customer[0].nic_number,
+        is_completed: 1
+      });
+      updatedCustomer
+        .update(req.params.id)
+        .then(([result]) => {
+          if (result.affectedRows === 1) {
+
+            const newVehicle = new Vehicle({
+              customer_id: req.params.id,
+              type: req.body.type,
+              number: req.body.	number,
+            });
+
+            newVehicle
+            .create()
+            .then(([result2]) => {
+              if (result2.affectedRows === 1) {
+                const tokenObject = auth.issueJWT({id: req.params.id,...updatedCustomer}, "CUSTOMER");
+                return res.status(200).json({
+                  code: 200,
+                  success: true,
+                  tokenObject: tokenObject,
+                  message: "Successfully registered",
+                });
+              } else {
+                return res.status(200).json({
+                  code: 200,
+                  success: false,
+                  message: "Please try again",
+                });
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              return res.status(200).json({
+                code: 200,
+                success: false,
+                message: error.message,
+              });
+            });
+          } else {
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: "Please try again",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.message,
+          });
+        });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: "This customer not found",
+      });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
+  });
 };
 
 exports.login = async function (req, res) {
@@ -166,13 +269,13 @@ exports.update = (req, res) => {
     }
     if (customer.length) {
       const updatedCustomer = new Customer({
-        name: req.body.name || customer[0].name,
-        email: req.body.email || customer[0].email,
+        first_name: req.body.first_name || customer[0].first_name,
+        last_name: req.body.last_name || customer[0].last_name,
         hash: hash || customer[0].hash,
         salt: salt || customer[0].salt,
+        contact_number: req.body.contact_number || customer[0].contact_number,
         nic_number: req.body.nic_number || customer[0].nic_number,
-        phone_number: req.body.phone_number || customer[0].phone_number,
-        address: req.body.address || customer[0].address,
+        is_completed: 1
       });
       updatedCustomer
         .update(req.params.id)
