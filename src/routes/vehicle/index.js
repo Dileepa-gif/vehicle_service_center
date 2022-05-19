@@ -1,5 +1,4 @@
 const routes = require('express').Router();
-//const uploads = require('../../lib/multer');
 const auth = require('../../util/auth');
 const system =  require('../../util/system');
 var upgradeTypeController = require('../../controllers/upgrade_type.controller');

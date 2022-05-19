@@ -89,6 +89,13 @@ exports.register = (req, res) => {
           .toString("hex");
     }
     if (customer.length) {
+      if (customer[0].is_completed) {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This account already registered",
+        });
+      }
       const updatedCustomer = new Customer({
         first_name: req.body.first_name || customer[0].first_name,
         last_name: req.body.last_name || customer[0].last_name,
@@ -105,8 +112,8 @@ exports.register = (req, res) => {
 
             const newVehicle = new Vehicle({
               customer_id: req.params.id,
-              type: req.body.type,
-              number: req.body.	number,
+              vehicle_type: req.body.vehicle_type,
+              vehicle_number: req.body.vehicle_number,
             });
 
             newVehicle
