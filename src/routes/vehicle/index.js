@@ -1,12 +1,13 @@
 const routes = require('express').Router();
 const auth = require('../../util/auth');
 const system =  require('../../util/system');
-var upgradeTypeController = require('../../controllers/upgrade_type.controller');
+var vehicleController = require('../../controllers/vehicle.controller');
 
-routes.post('/create',auth.authMiddleware(["ADMIN"]), upgradeTypeController.create);
-routes.put("/update/:id", auth.authMiddleware(["ADMIN"]), upgradeTypeController.update);
-routes.delete("/delete/:id", auth.authMiddleware(["ADMIN"]), upgradeTypeController.delete);
-routes.get('/getAllVehicles', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, upgradeTypeController.getAllVehicles);
-routes.get('/getVehicleById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, upgradeTypeController.getVehicleById);
+routes.post('/create',auth.authMiddleware(["CUSTOMER"]), vehicleController.create);
+routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), vehicleController.update);
+routes.delete("/delete/:id", auth.authMiddleware(["ADMIN", "CUSTOMER"]), vehicleController.delete);
+routes.get('/getAllVehicles', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getAllVehicles);
+routes.get('/getVehicleById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getVehicleById);
+routes.get('/getVehiclesByCustomerId/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getVehiclesByCustomerId);
 
 module.exports = routes;

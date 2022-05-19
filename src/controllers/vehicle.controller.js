@@ -1,8 +1,8 @@
-const Vehicle = require("../models/upgrade_vehicle_type.model");
+const Vehicle = require("../models/vehicle.model");
 
 exports.create = (req, res) => {
   const newVehicle = new Vehicle({
-    name: req.body.name,
+    customer_id: req.jwt.sub.id,
     vehicle_type: req.body.vehicle_type,
     vehicle_number: req.body.vehicle_number
   });
@@ -37,11 +37,21 @@ exports.getAllVehicles = (req, res) => {
 
   Vehicle.getAllVehicles()
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -56,11 +66,50 @@ exports.getAllVehicles = (req, res) => {
 exports.getVehicleById = (req, res) => {
   Vehicle.getVehicleById(req.params.id)
     .then(([rows]) => {
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
-        success: true,
-        data: rows,
+        success: false,
+        message: error.message,
       });
+    });
+};
+
+exports.getVehiclesByCustomerId = (req, res) => {
+  Vehicle.getVehiclesByCustomerId(req.params.id)
+    .then(([rows]) => {
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -75,7 +124,7 @@ exports.getVehicleById = (req, res) => {
 exports.update = (req, res) => {
 
   const updatedVehicle = new Vehicle({
-    name: req.body.name,
+    customer_id: req.jwt.sub.id,
     vehicle_type: req.body.vehicle_type,
     vehicle_number: req.body.vehicle_number
   });
