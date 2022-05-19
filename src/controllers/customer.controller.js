@@ -221,11 +221,21 @@ exports.login = async function (req, res) {
 exports.getAllCustomers = (req, res, next) => {
   Customer.getAllCustomers()
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -240,11 +250,21 @@ exports.getAllCustomers = (req, res, next) => {
 exports.getCustomerById = (req, res) => {
   Customer.getCustomerById(req.params.id)
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);

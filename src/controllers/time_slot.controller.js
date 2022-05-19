@@ -4,11 +4,21 @@ const Appointment = require("../models/appointment.model");
 exports.getAllTimeSlots = (req, res) => {
   TimeSlot.getAllTimeSlots()
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -23,11 +33,21 @@ exports.getAllTimeSlots = (req, res) => {
 exports.getTimeSlotById = (req, res) => {
   TimeSlot.getTimeSlotById(req.params.id)
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);

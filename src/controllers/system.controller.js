@@ -3,11 +3,21 @@ const System = require("../models/system.model");
 exports.getSystem = (req, res) => {
   System.getSystem()
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);

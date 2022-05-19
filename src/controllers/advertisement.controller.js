@@ -42,11 +42,21 @@ exports.create = (req, res) => {
 exports.getAllAdvertisements = (req, res) => {
   Advertisement.getAllAdvertisements()
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -61,11 +71,21 @@ exports.getAllAdvertisements = (req, res) => {
 exports.getAdvertisementById = (req, res) => {
   Advertisement.getAdvertisementById(req.params.id)
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);

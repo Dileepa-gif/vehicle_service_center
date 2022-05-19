@@ -84,11 +84,21 @@ exports.create = (req, res) => {
 exports.getAllAppointments = (req, res) => {
   Appointment.getAllAppointments()
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -103,11 +113,21 @@ exports.getAllAppointments = (req, res) => {
 exports.getAppointmentById = (req, res) => {
   Appointment.getAppointmentById(req.params.id)
     .then(([rows]) => {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        data: rows,
-      });
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
