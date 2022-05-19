@@ -5,20 +5,23 @@ const Service = require("../models/service.model");
 exports.create = (req, res) => {
   let number_of_vehicles = 0;
 
-  TimeSlot.getTimeSlotByHours(req.body.start_hour, req.body.end_hour)
+  TimeSlot.getTimeSlotById(req.body.time_slot_id)
     .then(([time_slot]) => {
       if (time_slot.length) {
         number_of_vehicles = time_slot[0].number_of_vehicles;
-        Appointment.getAppointmentsCountByTimeSlotId(req.body.time_slot_id)
+        Appointment.getAppointmentsCountByTimeSlotIdAndDate(req.body.time_slot_id, req.body.date)
           .then(([appointments]) => {
+            console.log(appointments)
             if (appointments[0].count < number_of_vehicles) {
               const newAppointment = new Appointment({
                 status: "Reserved",
+                date: req.body.date,
                 vehicle_id: req.body.vehicle_id,
                 customer_id: req.jwt.sub.id,
                 time_slot_id: req.body.time_slot_id,
                 upgrade_type_id: req.body.upgrade_type_id,
               });
+              console.log("00 = ", newAppointment)
               newAppointment
                 .create()
                 .then(([result]) => {
@@ -123,14 +126,15 @@ exports.update = (req, res) => {
       if (time_slot.length) {
         number_of_vehicles = time_slot[0].number_of_vehicles;
 
-        Appointment.getAppointmentsCountByTimeSlotId(req.body.time_slot_id)
+        Appointment.getAppointmentsCountByTimeSlotIdAndDate(req.body.time_slot_id, req.body.date)
           .then(([appointments]) => {
             if (appointments[0].count < number_of_vehicles) {
               const updatedAppointment = new Appointment({
                 status: "Reserved",
+                date: req.body.date,
                 vehicle_id: req.body.vehicle_id,
                 customer_id: req.jwt.sub.id,
-                time_slot_id: time_slot[0].id,
+                time_slot_id: req.body.time_slot_id,
                 upgrade_type_id: req.body.upgrade_type_id,
               });
               updatedAppointment

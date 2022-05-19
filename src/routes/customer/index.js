@@ -1,12 +1,11 @@
 const routes = require('express').Router();
-//const uploads = require('../../lib/multer');
 const auth = require('../../util/auth');
 const system =  require('../../util/system');
 var customerController = require('../../controllers/customer.controller');
 
 
 routes.post('/signUp', system.activation, customerController.signUp);
-routes.put('/register/:id', system.activation, customerController.register);
+routes.put('/register/:id', auth.authMiddleware(["CUSTOMER"]), system.activation, customerController.register);
 routes.post('/login', system.activation, customerController.login);
 routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), system.activation, customerController.update);
 routes.delete("/delete/:id", auth.authMiddleware(["ADMIN","CUSTOMER"]), system.activation, customerController.delete);

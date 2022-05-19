@@ -1,10 +1,10 @@
-const Vehicle = require("../models/upgrade_type.model");
+const Vehicle = require("../models/upgrade_vehicle_type.model");
 
 exports.create = (req, res) => {
   const newVehicle = new Vehicle({
     name: req.body.name,
-    type: req.body.type,
-    number: req.body.number
+    vehicle_type: req.body.vehicle_type,
+    vehicle_number: req.body.vehicle_number
   });
   newVehicle
     .create()
@@ -76,8 +76,8 @@ exports.update = (req, res) => {
 
   const updatedVehicle = new Vehicle({
     name: req.body.name,
-    type: req.body.type,
-    number: req.body.number
+    vehicle_type: req.body.vehicle_type,
+    vehicle_number: req.body.vehicle_number
   });
   updatedVehicle
     .update(req.params.id)
