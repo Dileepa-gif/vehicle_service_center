@@ -22,6 +22,12 @@ module.exports = class Vehicle {
         return db.execute(query);
     }
 
+    static getNotAdvertisedVehiclesByCustomerId(customer_id) {
+        const query = `SELECT v.* FROM vehicle v LEFT JOIN advertisement a ON v.id = a.vehicle_id
+        WHERE a.vehicle_id IS NULL AND v.customer_id = '${customer_id}'`;
+        return db.execute(query);
+    }
+
     static delete(id) {
         const query = `DELETE FROM vehicle WHERE id = '${id}'`;
         return db.execute(query);

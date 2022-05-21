@@ -1,26 +1,64 @@
 const Advertisement = require("../models/advertisement.model");
+const AdvertisementImage = require("../models/advertisement_image.model");
 
 exports.create = (req, res) => {
   const newAdvertisement = new Advertisement({
-    customer_id : req.jwt.sub.id,
-    vehicle_type : req.body.vehicle_type,
-    brand : req.body.brand,
-    model : req.bod.model,
-    year_of_manufacture : req.body.year_of_manufacture,
-    condition : req.body.condition,
-    description : req.body.description,
-    price : req.body.price,
-    is_sold : 0
+    vehicle_id: req.body.vehicle_id,
+    brand: req.body.brand,
+    model: req.body.model,
+    manufactured_year: req.body.manufactured_year,
+    vehicle_condition: req.body.vehicle_condition,
+    transmission: req.body.transmission,
+    fuel_type: req.body.fuel_type,
+    engine_capacity: req.body.engine_capacity,
+    mileage: req.body.mileage,
+    seller_name: req.body.seller_name,
+    city: req.body.city,
+    price: req.body.price,
+    contact_number: req.body.contact_number,
+    is_sold: 0,
   });
+
   newAdvertisement
     .create()
     .then(([result]) => {
       if (result.affectedRows === 1) {
-        return res.status(200).json({
-          code: 200,
-          success: true,
-          message: "Successfully created",
-        });
+        if (req.body.image_arr) {
+
+          let image_arr = req.body.image_arr;
+          
+          image_arr.forEach((image) => {
+            
+            const newAdvertisementImage = new AdvertisementImage({
+              advertisement_id: result.insertId,
+              image: image,
+            });
+            newAdvertisementImage
+              .create()
+              .then(([image_result]) => {
+                console.log("image_result => ", image_result);
+              })
+              .catch((error) => {
+                console.log(error);
+                return res.status(200).json({
+                  code: 200,
+                  success: false,
+                  message: error.message,
+                });
+              });
+          });
+          return res.status(200).json({
+            code: 200,
+            success: true,
+            message: "Successfully created",
+          });
+        } else {
+          return res.status(200).json({
+            code: 200,
+            success: true,
+            message: "Successfully created",
+          });
+        }
       } else {
         return res.status(200).json({
           code: 200,
@@ -40,20 +78,48 @@ exports.create = (req, res) => {
 };
 
 exports.getAllAdvertisements = (req, res) => {
+  let advertisement_arr = [];
   Advertisement.getAllAdvertisements()
-    .then(([rows]) => {
-      if(rows.length){
+    .then(async ([advertisements]) => {
+      console.log(advertisements)
+      if (advertisements.length) {
+        advertisements.forEach((advertisement) => {
+          AdvertisementImage.getAdvertisementImagesByAdvertisementId(
+            advertisement.id
+          )
+            .then(([images]) => {
+              const _advertisement = advertisement;
+              const _images = { images: images };
+              const NewElement = {
+                ..._advertisement,
+                ..._images,
+              };
+              advertisement_arr.push(NewElement);
+            })
+            .catch((error) => {
+              console.log(error);
+              return res.status(200).json({
+                code: 200,
+                success: false,
+                message: error.message,
+              });
+            });
+        });
+        function sleep(millis) {
+          return new Promise((resolve) => setTimeout(resolve, millis));
+        }
+        await sleep(500);
         return res.status(200).json({
           code: 200,
           success: true,
-          data: rows,
+          data: advertisement_arr,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
-          data: rows,
+          data: advertisements,
           message: "Data not found",
         });
       }
@@ -70,19 +136,38 @@ exports.getAllAdvertisements = (req, res) => {
 
 exports.getAdvertisementById = (req, res) => {
   Advertisement.getAdvertisementById(req.params.id)
-    .then(([rows]) => {
-      if(rows.length){
-        return res.status(200).json({
-          code: 200,
-          success: true,
-          data: rows,
-          message: "Data received",
-        });
-      }else{
+    .then(([advertisement]) => {
+      if (advertisement.length) {
+        AdvertisementImage.getAdvertisementImagesByAdvertisementId(
+          req.params.id
+        )
+          .then(([images]) => {
+            console.log(images)
+            const _advertisement = advertisement;
+            const _images = { images: images };
+            return res.status(200).json({
+              code: 200,
+              success: true,
+              data: {
+                ..._advertisement,
+                ..._images,
+              },
+              message: "Data received",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: error.message,
+            });
+          });
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
-          data: rows,
+          data: advertisement,
           message: "Data not found",
         });
       }
@@ -98,79 +183,121 @@ exports.getAdvertisementById = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  let number_of_vehicles = 0;
-  TimeSlot.getTimeSlotById(req.body.time_slot_id)
-    .then(([time_slot]) => {
-      if (time_slot.length) {
-        number_of_vehicles = time_slot[0].number_of_vehicles;
-
-        Advertisement.getAdvertisementsCountByTimeSlotId(req.body.time_slot_id)
-          .then(([advertisements]) => {
-            if (advertisements[0].count < number_of_vehicles) {
-              const updatedAdvertisement = new Advertisement({
-                status: "Reserved",
-                vehicle_reg_number: req.body.vehicle_reg_number,
-                customer_id: req.jwt.sub.id,
-                time_slot_id: time_slot[0].id,
-                upgrade_type_id: req.body.upgrade_type_id,
-              });
-              updatedAdvertisement
-                .update(req.params.id, req.jwt.sub.id)
-                .then(([result]) => {
-                  if (result.affectedRows === 1) {
-                    return res.status(200).json({
-                      code: 200,
-                      success: true,
-                      message: "Successfully updated",
-                    });
-                  } else {
+  if (req.body.image_arr && req.body.image_arr.length) {
+    let image_arr = req.body.image_arr;
+    const updatedAdvertisement = new Advertisement({
+      vehicle_id: req.body.vehicle_id,
+      brand: req.body.brand,
+      model: req.bod.model,
+      manufactured_year: req.body.manufactured_year,
+      vehicle_condition: req.body.vehicle_condition,
+      transmission: req.body.transmission,
+      fuel_type: req.body.fuel_type,
+      engine_capacity: req.body.engine_capacity,
+      mileage: req.body.mileage,
+      seller_name: req.body.seller_name,
+      city: req.body.city,
+      price: req.bod.price,
+      contact_number: req.body.contact_number,
+      is_sold: 0,
+    });
+    updatedAdvertisement
+      .update(req.params.id)
+      .then(([result]) => {
+        if (result.affectedRows === 1) {
+          AdvertisementImage.deleteByAdvertisementId(req.params.id)
+            .then(([result]) => {
+              image_arr.forEach((image) => {
+                const newAdvertisementImage = new AdvertisementImage({
+                  advertisement_id: result.insertId,
+                  image: image.image,
+                });
+                newAdvertisementImage.create
+                  .then(([image_result]) => {
+                    console.log("image_result => ", image_result);
+                  })
+                  .catch((error) => {
+                    console.log(error);
                     return res.status(200).json({
                       code: 200,
                       success: false,
-                      message: "Please try again",
+                      message: error.message,
                     });
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                  return res.status(200).json({
-                    code: 200,
-                    success: false,
-                    message: error.message,
                   });
-                });
-            } else {
+              });
+              return res.status(200).json({
+                code: 200,
+                success: true,
+                message: "Successfully updated",
+              });
+            })
+            .catch((error) => {
+              console.log(error);
               return res.status(200).json({
                 code: 200,
                 success: false,
-                message: "Time slot is not available",
+                message: error.message,
               });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            return res.status(200).json({
-              code: 200,
-              success: false,
-              message: error.message,
             });
+        } else {
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: "Please try again",
           });
-      } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
         return res.status(200).json({
           code: 200,
           success: false,
-          message: "Time slot is not a working time",
+          message: error.message,
         });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      return res.status(200).json({
-        code: 200,
-        success: false,
-        message: error.message,
       });
+  } else {
+    const updatedAdvertisement = new Advertisement({
+      vehicle_id: req.body.vehicle_id,
+      brand: req.body.brand,
+      model: req.bod.model,
+      manufactured_year: req.body.manufactured_year,
+      vehicle_condition: req.body.vehicle_condition,
+      transmission: req.body.transmission,
+      fuel_type: req.body.fuel_type,
+      engine_capacity: req.body.engine_capacity,
+      mileage: req.body.mileage,
+      seller_name: req.body.seller_name,
+      city: req.body.city,
+      price: req.bod.price,
+      contact_number: req.body.contact_number,
+      is_sold: 0,
     });
+    updatedAdvertisement
+      .update(req.params.id)
+      .then(([result]) => {
+        if (result.affectedRows === 1) {
+          return res.status(200).json({
+            code: 200,
+            success: true,
+            message: "Successfully updated",
+          });
+        } else {
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: "Please try again",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: error.message,
+        });
+      });
+  }
 };
 
 exports.delete = (req, res) => {
@@ -202,33 +329,12 @@ exports.delete = (req, res) => {
 
 exports.changeStatus = (req, res) => {
   Advertisement.changeStatus(req.params.id).then(([result]) => {
-    if (result.affectedRows === 1) {    
-      const newService = new Service({
-        is_done: 0,
-        is_paid: 0,
-        payment_method: null,
-        discount: 0,
-        rating: 0,
-        advertisement_id: req.params.id,
-        employee_id: req.jwt.sub.id,
+    if (result.affectedRows === 1) {
+      return res.status(200).json({
+        code: 200,
+        success: true,
+        message: "Successfully updated",
       });
-      newService
-        .create()
-        .then(([result]) => {
-          if (result.affectedRows === 1) {
-            return res.status(200).json({
-              code: 200,
-              success: true,
-              message: "Successfully status changed",
-            });
-          } else {
-            return res.status(200).json({
-              code: 200,
-              success: false,
-              message: "Please try again",
-            });
-          }
-        })
     } else {
       return res.status(200).json({
         code: 200,

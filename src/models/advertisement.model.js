@@ -2,30 +2,33 @@ const db = require('../util/database');
 
 module.exports = class Advertisementnt {
     constructor(advertisement) {
-        this.customer_id = advertisement.customer_id;
-        this.vehicle_type = advertisement.vehicle_type;
-        this.brand  = advertisement.brand ;
+        this.vehicle_id = advertisement.vehicle_id;
+        this.brand  = advertisement.brand;
         this.model  = advertisement.model ;
-        this.year_of_manufacture  = advertisement.year_of_manufacture ;
-        this.condition = advertisement.condition;
-        this.description  = advertisement.description ;
-        this.price  = advertisement.price ;
+        this.manufactured_year  = advertisement.manufactured_year ;
+        this.vehicle_condition = advertisement.vehicle_condition;
+        this.transmission  = advertisement.transmission;
+        this.fuel_type  = advertisement.fuel_type;
+        this.engine_capacity  = advertisement.engine_capacity;
+        this.mileage  = advertisement.mileage;
+        this.seller_name  = advertisement.seller_name;
+        this.city  = advertisement.city;
+        this.price  = advertisement.price;
+        this.contact_number  = advertisement.contact_number;
         this.is_sold  = advertisement.is_sold ;
     }
 
-    static getAllAdvertisementnts() {
-        const query = `SELECT a.*, c.name AS customer_name, c.email, c.nic_number, c.phone_number, c.address, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time FROM advertisement a 
-        INNER JOIN customer c ON a.customer_id = c.id
-        INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
-        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id`;
+    static getAllAdvertisements() {
+        const query = `SELECT a.*, v.customer_id, v.vehicle_type, v.vehicle_number, c.first_name, c.last_name, c.email FROM advertisement a 
+        INNER JOIN vehicle v ON a.vehicle_id = v.id
+        INNER JOIN  customer c ON v.customer_id = c.id WHERE a.is_sold = 0`;
         return db.execute(query);
     }
 
-    static getAdvertisementntById(id) {
-        const query = `SELECT a.*, c.name AS customer_name, c.email, c.nic_number, c.phone_number, c.address, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time FROM advertisement a 
-        INNER JOIN customer c ON a.customer_id = c.id
-        INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
-        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id WHERE a.id = '${id}'`;
+    static getAdvertisementById(id) {
+        const query = `SELECT a.*, v.customer_id, v.vehicle_type, v.vehicle_number, c.first_name, c.last_name, c.email FROM advertisement a 
+        INNER JOIN vehicle v ON a.vehicle_id = v.id
+        INNER JOIN  customer c ON v.customer_id = c.id WHERE a.is_sold = 0 AND a.id = '${id}'`;
         return db.execute(query);
     }
 
@@ -37,16 +40,21 @@ module.exports = class Advertisementnt {
 
 
     create() {
-        const query = `INSERT INTO advertisement (customer_id, vehicle_type, brand, model, year_of_manufacture, condition, description, price, is_sold) VALUE(?,?,?,?,?,?,?,?,?)`;
-        return db.execute(query, [this.customer_id, this.vehicle_type, this.brand, this.model, this.year_of_manufacture, this.condition, this.description, this.price, this.is_sold]);
+        const query = `INSERT INTO advertisement (vehicle_id, brand, model, manufactured_year, vehicle_condition, transmission, fuel_type, engine_capacity, mileage, seller_name, city, price, contact_number, is_sold) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+        return db.execute(query, [this.vehicle_id, this.brand, this.model, this.manufactured_year, this.vehicle_condition, this.transmission, this.fuel_type, this.engine_capacity, this.mileage, this.seller_name, this.city, this.price, this.contact_number, this.is_sold]);
     }
 
 
     update(id, customer_id) {
-        const query = `UPDATE advertisement set customer_id = ?,  vehicle_type = ?, brand = ?, model = ?, year_of_manufacture = ?,  condition = ?, description = ?, price = ?, is_sold = ? WHERE id = ?  AND customer_id = ? AND NOT is_sold = 1 `;
-        return db.execute(query, [this.customer_id, this.vehicle_type, this.brand, this.model, this.year_of_manufacture, this.condition, this.description, this.price, this.is_sold, id, customer_id]);
+        const query = `UPDATE advertisement set vehicle_id = ?,  brand = ?, model = ?, manufactured_year = ?, vehicle_condition = ?,  transmission = ?, fuel_type = ?, engine_capacity = ?, mileage = ?, seller_name = ?, city = ?, price = ?, contact_number = ?, is_sold = ? WHERE id = ?  AND NOT is_sold = 1 `;
+        return db.execute(query, [this.vehicle_id, this.brand, this.model, this.manufactured_year, this.vehicle_condition, this.transmission, this.fuel_type, this.engine_capacity, this.mileage, this.seller_name, this.city, this.price, this.contact_number, this.is_sold, id]);
     }
 
+
+    static changeStatus(id) {
+        const query = `UPDATE advertisement set is_sold = ? WHERE id = ?`;
+        return db.execute(query, [1, id]);
+    }
     
 
 };

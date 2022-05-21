@@ -10,6 +10,7 @@ const appointmentRoutes = require('./appointment');
 const serviceRoutes = require('./service');
 const systemRoutes = require('./system');
 const vehicleRoutes = require('./vehicle');
+const advertisementRoutes = require('./advertisement');
 
 
 routes.use("/admin", adminRoutes);
@@ -21,6 +22,7 @@ routes.use("/appointment", appointmentRoutes);
 routes.use("/service", serviceRoutes);
 routes.use("/system", systemRoutes);
 routes.use("/vehicle", vehicleRoutes);
+routes.use("/advertisement", advertisementRoutes);
 
 
 
