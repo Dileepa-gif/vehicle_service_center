@@ -9,5 +9,6 @@ routes.delete("/delete/:id", auth.authMiddleware(["ADMIN", "CUSTOMER"]), vehicle
 routes.get('/getAllVehicles', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getAllVehicles);
 routes.get('/getVehicleById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getVehicleById);
 routes.get('/getVehiclesByCustomerId/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getVehiclesByCustomerId);
+routes.get('/getNotAdvertisedVehiclesByCustomerId/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, vehicleController.getNotAdvertisedVehiclesByCustomerId);
 
 module.exports = routes;

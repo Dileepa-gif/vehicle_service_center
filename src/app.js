@@ -12,9 +12,9 @@ const pjax = require('express-pjax');
 
 
 const configs = require("./configs/app-config");
-app.use(bodyParser.urlencoded({extends: false})); 
-app.use(bodyParser.json()); 
-
+app.use(bodyParser.json({ limit: '50mb', extended: true }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.static(path.join(__dirname, '../src/views/template/controllers')));
@@ -32,12 +32,12 @@ template.registerPartials(partialPath);
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
-app.use(
-    cors({
-        origin: "*", 
-        credentials: true,
-    })
-);
+// app.use(
+//     cors({
+//         origin: "*", 
+//         credentials: true,
+//     })
+// );
 
 
 
@@ -55,3 +55,4 @@ app.use('/', routes);
 app.listen(configs.serverPort, () => {
     console.log(`Listing to port ${configs.serverPort}`);
 });
+
