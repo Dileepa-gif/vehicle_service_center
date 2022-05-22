@@ -81,7 +81,6 @@ exports.getAllAdvertisements = (req, res) => {
   let advertisement_arr = [];
   Advertisement.getAllAdvertisements()
     .then(async ([advertisements]) => {
-      console.log(advertisements)
       if (advertisements.length) {
         advertisements.forEach((advertisement) => {
           AdvertisementImage.getAdvertisementImagesByAdvertisementId(
@@ -142,7 +141,6 @@ exports.getAdvertisementById = (req, res) => {
           req.params.id
         )
           .then(([images]) => {
-            console.log(images)
             const _advertisement = advertisement;
             const _images = { images: images };
             return res.status(200).json({
@@ -188,7 +186,7 @@ exports.update = (req, res) => {
     const updatedAdvertisement = new Advertisement({
       vehicle_id: req.body.vehicle_id,
       brand: req.body.brand,
-      model: req.bod.model,
+      model: req.body.model,
       manufactured_year: req.body.manufactured_year,
       vehicle_condition: req.body.vehicle_condition,
       transmission: req.body.transmission,
@@ -197,24 +195,26 @@ exports.update = (req, res) => {
       mileage: req.body.mileage,
       seller_name: req.body.seller_name,
       city: req.body.city,
-      price: req.bod.price,
+      price: req.body.price,
       contact_number: req.body.contact_number,
       is_sold: 0,
     });
     updatedAdvertisement
       .update(req.params.id)
-      .then(([result]) => {
-        if (result.affectedRows === 1) {
+      .then(([advertisement]) => {
+        if (advertisement.affectedRows === 1) {
           AdvertisementImage.deleteByAdvertisementId(req.params.id)
-            .then(([result]) => {
+            .then(([deleted_images]) => {
               image_arr.forEach((image) => {
                 const newAdvertisementImage = new AdvertisementImage({
-                  advertisement_id: result.insertId,
-                  image: image.image,
+                  advertisement_id: req.params.id,
+                  image: image,
                 });
-                newAdvertisementImage.create
-                  .then(([image_result]) => {
-                    console.log("image_result => ", image_result);
+
+                console.log("qwwqq", newAdvertisementImage);
+                newAdvertisementImage.create()
+                  .then(([inserted_images]) => {
+                    console.log("inserted_images => ", inserted_images);
                   })
                   .catch((error) => {
                     console.log(error);
@@ -259,7 +259,7 @@ exports.update = (req, res) => {
     const updatedAdvertisement = new Advertisement({
       vehicle_id: req.body.vehicle_id,
       brand: req.body.brand,
-      model: req.bod.model,
+      model: req.body.model,
       manufactured_year: req.body.manufactured_year,
       vehicle_condition: req.body.vehicle_condition,
       transmission: req.body.transmission,
@@ -268,14 +268,14 @@ exports.update = (req, res) => {
       mileage: req.body.mileage,
       seller_name: req.body.seller_name,
       city: req.body.city,
-      price: req.bod.price,
+      price: req.body.price,
       contact_number: req.body.contact_number,
       is_sold: 0,
     });
     updatedAdvertisement
       .update(req.params.id)
-      .then(([result]) => {
-        if (result.affectedRows === 1) {
+      .then(([advertisement]) => {
+        if (advertisement.affectedRows === 1) {
           return res.status(200).json({
             code: 200,
             success: true,
