@@ -9,5 +9,6 @@ routes.put("/done/:id", auth.authMiddleware(["EMPLOYEE"]), system_status.activat
 routes.put("/addRating/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activation, serviceController.addRating);
 routes.get('/getAllServices', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, serviceController.getAllServices);
 routes.get('/getServiceById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, serviceController.getServiceById);
+routes.get('/getHistoryByVehicleId/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, serviceController.getHistoryByVehicleId);
 
 module.exports = routes;

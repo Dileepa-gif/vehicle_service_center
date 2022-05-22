@@ -31,6 +31,16 @@ module.exports = class Service {
         return db.execute(query);
     }
 
+    static getHistoryByVehicleId(id) {
+        const query = `SELECT s.*, a.status, a.date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM service s 
+        INNER JOIN appointment a ON s.appointment_id = a.id
+        INNER JOIN customer c ON a.customer_id = c.id
+        INNER JOIN vehicle v ON a.vehicle_id = v.id
+        INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
+        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id WHERE  v.id = '${id}'`;
+        return db.execute(query);
+    }
+
     static done(id, discount){
         const query = `UPDATE service set is_done = 1, discount = ?  WHERE id = ? AND is_paid = 0`;
         return db.execute(query, [discount, id]);
