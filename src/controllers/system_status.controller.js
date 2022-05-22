@@ -1,7 +1,7 @@
-const System = require("../models/system.model");
+const SystemStatus = require("../models/system_status.model");
 
-exports.getSystem = (req, res) => {
-  System.getSystem()
+exports.getSystemStatus = (req, res) => {
+  SystemStatus.getSystemStatus()
     .then(([rows]) => {
       if(rows.length){
         return res.status(200).json({
@@ -30,11 +30,11 @@ exports.getSystem = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const updatedSystem = new System({
+  const updatedSystemStatus = new SystemStatus({
     id: 1,
     is_active: req.body.is_active,
   });
-  updatedSystem
+  updatedSystemStatus
     .update()
     .then(([result]) => {
       if (result.affectedRows === 1) {

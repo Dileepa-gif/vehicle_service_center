@@ -1,7 +1,7 @@
-const System = require("../models/system.model");
+const SystemStatus = require("../models/system_status.model");
 
 const activation = (req, res, next) => {
-  System.getSystem()
+  SystemStatus.getSystemStatus()
     .then(([rows]) => {
       if (rows[0].is_active) {
         next();

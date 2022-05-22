@@ -1,13 +1,13 @@
 const routes = require('express').Router();
 const auth = require('../../util/auth');
-const system =  require('../../util/system');
+const system_status =  require('../../util/system_status');
 var appointmentController = require('../../controllers/appointment.controller');
 
-routes.post('/create',auth.authMiddleware(["CUSTOMER"]), system.activation, appointmentController.create);
-routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), system.activation, appointmentController.update);
-routes.delete("/delete/:id", auth.authMiddleware(["CUSTOMER"]), system.activation, appointmentController.delete);
-routes.get('/getAllAppointments', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, appointmentController.getAllAppointments);
-routes.get('/getAppointmentById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system.activation, appointmentController.getAppointmentById);
-routes.get('/changeStatus/:id', auth.authMiddleware(["EMPLOYEE"]), system.activation, appointmentController.changeStatus);
+routes.post('/create',auth.authMiddleware(["CUSTOMER"]), system_status.activation, appointmentController.create);
+routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activation, appointmentController.update);
+routes.delete("/delete/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activation, appointmentController.delete);
+routes.get('/getAllAppointments', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getAllAppointments);
+routes.get('/getAppointmentById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getAppointmentById);
+routes.get('/changeStatus/:id', auth.authMiddleware(["EMPLOYEE"]), system_status.activation, appointmentController.changeStatus);
 
 module.exports = routes;

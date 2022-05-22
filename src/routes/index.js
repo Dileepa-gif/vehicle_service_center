@@ -8,7 +8,7 @@ const upgradeTypeRoutes = require('./upgrade_type');
 const timeSlotRoutes = require('./time_slot');
 const appointmentRoutes = require('./appointment');
 const serviceRoutes = require('./service');
-const systemRoutes = require('./system');
+const systemStatusRoutes = require('./system_status');
 const vehicleRoutes = require('./vehicle');
 const advertisementRoutes = require('./advertisement');
 
@@ -20,7 +20,7 @@ routes.use("/upgrade_type", upgradeTypeRoutes);
 routes.use("/time_slot", timeSlotRoutes);
 routes.use("/appointment", appointmentRoutes);
 routes.use("/service", serviceRoutes);
-routes.use("/system", systemRoutes);
+routes.use("/system_status", systemStatusRoutes);
 routes.use("/vehicle", vehicleRoutes);
 routes.use("/advertisement", advertisementRoutes);
 
