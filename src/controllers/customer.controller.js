@@ -2,6 +2,7 @@ const Customer = require("../models/customer.model");
 const Vehicle = require("../models/vehicle.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
+const {customerForgotPasswordSender} = require("../util/emailService");
 
 exports.signUp = (req, res) => {
   Customer.getCustomerByEmail(req.body.email)
@@ -216,6 +217,75 @@ exports.login = async function (req, res) {
         message: error.message,
       });
     });
+};
+
+
+exports.passwordReset = (req, res) => {
+  Customer.getCustomerByEmail(req.body.email)
+  .then(([customer]) => {
+    var randomPassword = Math.random().toString(36).slice(-8);
+    let salt;
+    let hash;
+    if(randomPassword){
+      salt = crypto.randomBytes(32).toString("hex");
+      hash = crypto
+          .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
+          .toString("hex");
+    }
+    if (customer.length) {
+      const updatedCustomer = new Customer({
+        first_name: customer[0].first_name,
+        last_name: customer[0].last_name,
+        email: req.body.email,
+        hash: hash,
+        salt: salt,
+        contact_number: customer[0].contact_number,
+        nic_number: customer[0].nic_number,
+        is_completed: 1
+      });
+      console.log(updatedCustomer)
+      updatedCustomer
+        .update(customer[0].id)
+        .then(([result]) => {
+          if (result.affectedRows === 1) {
+            customerForgotPasswordSender(updatedCustomer,randomPassword);
+            return res.status(200).json({
+              code: 200,
+              success: true,
+              message: "Please check your email.",
+            });
+          } else {
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: "Please try again",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.message,
+          });
+        });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: "This customer not found",
+      });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
+  });
 };
 
 exports.getAllCustomers = (req, res, next) => {

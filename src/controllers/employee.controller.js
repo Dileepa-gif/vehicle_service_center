@@ -1,7 +1,7 @@
 const Employee = require("../models/employee.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
-const { emailSender} = require("../util/emailService");
+const { employeePasswordSender} = require("../util/emailService");
 
 exports.register = (req, res) => {
   Employee.getEmployeeByEmail(req.body.email)
@@ -31,15 +31,10 @@ exports.register = (req, res) => {
           .create()
           .then(([result]) => {
             if (result.affectedRows === 1) {
-              const tokenObject = auth.issueJWT({
-                id: result.insertId,
-                ...newEmployee,
-              }, "EMPLOYEE");
-              emailSender(newEmployee,randomPassword);
+              employeePasswordSender(newEmployee,randomPassword);
               return res.status(200).json({
                 code: 200,
                 success: true,
-                tokenObject: tokenObject,
                 message: "Successfully registered",
               });
             } else {
