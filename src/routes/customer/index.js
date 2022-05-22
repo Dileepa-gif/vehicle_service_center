@@ -7,6 +7,7 @@ var customerController = require('../../controllers/customer.controller');
 routes.post('/signUp', system.activation, customerController.signUp);
 routes.put('/register/:id', auth.authMiddleware(["CUSTOMER"]), system.activation, customerController.register);
 routes.post('/login', system.activation, customerController.login);
+routes.post('/passwordReset', system.activation, customerController.passwordReset);
 routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), system.activation, customerController.update);
 routes.delete("/delete/:id", auth.authMiddleware(["ADMIN","CUSTOMER"]), system.activation, customerController.delete);
 routes.get('/getAllCustomers', auth.authMiddleware(["ADMIN","EMPLOYEE"]), system.activation, customerController.getAllCustomers);
