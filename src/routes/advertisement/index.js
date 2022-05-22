@@ -8,6 +8,6 @@ routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activ
 routes.delete("/delete/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activation, advertisementController.delete);
 routes.get('/getAllAdvertisements', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, advertisementController.getAllAdvertisements);
 routes.get('/getAdvertisementById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, advertisementController.getAdvertisementById);
-routes.get('/changeStatus/:id', auth.authMiddleware(["EMPLOYEE"]), system_status.activation, advertisementController.changeStatus);
+routes.get('/changeStatus/:id', auth.authMiddleware(["CUSTOMER"]), system_status.activation, advertisementController.changeStatus);
 
 module.exports = routes;
