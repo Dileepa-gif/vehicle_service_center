@@ -1,7 +1,7 @@
 
 const express = require('express');
+const expressLayouts = require('express-ejs-layouts')
 const app = express();
-const template = require('hbs');
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const routes = require('./routes');
@@ -16,28 +16,22 @@ app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, '../public')));
-app.use(express.static(path.join(__dirname, '../src/views/template/controllers')));
+// Static Files
+app.use(express.static('public'))
+app.use('/css', express.static(__dirname + 'public/css'))
+app.use('/js', express.static(__dirname + 'public/js'))
+app.use('/img', express.static(__dirname + 'public/img'))
 
-const templatePath = path.join(__dirname, '/views');
-const partialPath = path.join(__dirname, '/views/template/admin');
-
-app.set('view engine', 'hbs');
-app.engine('html', require('hbs').__express);
-app.set('views', templatePath);
-app.use(pjax());
-template.registerPartials(partialPath);
+// Set Views
+app.use(expressLayouts);
+app.set('layout', './layouts/full-width')
+app.set('view engine', 'ejs');
 
 
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(
-//     cors({
-//         origin: "*", 
-//         credentials: true,
-//     })
-// );
+
 
 
 
@@ -50,6 +44,15 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', routes);
+
+app.get('', (req, res) => {
+    res.render('index', { text: 'This is EJS', title : 'Home Page'})
+})
+
+app.get('/about', (req, res) => {
+    res.render('about', { layout:'./layouts/sidebar-layout', text: 'About Page', title : 'About Page'})
+})
+
 
 
 app.listen(configs.serverPort, () => {
