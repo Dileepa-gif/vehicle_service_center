@@ -2,6 +2,8 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts')
 const app = express();
+const session = require('express-session');
+const flash = require('connect-flash');
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const routes = require('./routes');
@@ -22,9 +24,11 @@ app.use('/css', express.static(__dirname + 'public/css'))
 app.use('/js', express.static(__dirname + 'public/js'))
 app.use('/img', express.static(__dirname + 'public/img'))
 
+console.log()
+
 // Set Views
 app.use(expressLayouts);
-app.set('layout', './layouts/full-width')
+app.set('layout', './layouts/sidebar-layout')
 app.set('view engine', 'ejs');
 
 
@@ -42,16 +46,24 @@ app.use((req, res, next) => {
     next();
 });
 
+
+
+app.use(session({
+    secret: 'secret key',
+    resave: false,
+    saveUninitialized: false
+  }));
+app.use(flash());
 // Routes
 app.use('/', routes);
 
-app.get('', (req, res) => {
-    res.render('index', { text: 'This is EJS', title : 'Home Page'})
-})
+// app.get('', (req, res) => {
+//     res.render('index', { text: 'This is EJS', title : 'Home Page'})
+// })
 
-app.get('/about', (req, res) => {
-    res.render('about', { layout:'./layouts/sidebar-layout', text: 'About Page', title : 'About Page'})
-})
+// app.get('/about', (req, res) => {
+//     res.render('about', { layout:'./layouts/sidebar-layout', text: 'About Page', title : 'About Page'})
+// })
 
 
 
