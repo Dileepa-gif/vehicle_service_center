@@ -53,25 +53,21 @@ const authMiddleware = (status_arr) => {
               }
             });
             if(temp){
-              const flash_body = {code :200, success: false, message: "You are not" +  status_list};
-              req.flash('flash_body', flash_body);
+              req.flash('flash_body', {code :200, success: false, message: "You are not" +  status_list});
               res.redirect('/');
             }
     
           } catch (err) {
-            const flash_body = {code :200, success: false, message: "Please login to access this functionality"};
-            req.flash('flash_body', flash_body);
+            req.flash('flash_body', {code :200, success: false, message: "Please login to access this functionality"});
             res.redirect('/');
           }
     
         } else {
-          const flash_body = {code :200, success: false, message: "Please login to access this functionality"};
-          req.flash('flash_body', flash_body);
+          req.flash('flash_body', {code :200, success: false, message: "Please login to access this functionality"});
           res.redirect('/');
         }
       } else {
-        const flash_body = {code :200, success: false, message: "Please login to access this functionality"};
-        req.flash('flash_body', flash_body);
+        req.flash('flash_body', {code :200, success: false, message: "Please login to access this functionality"});
         res.redirect('/');
       }
     }else{
