@@ -33,40 +33,80 @@ function issueJWT(user, status) {
 
 const authMiddleware = (status_arr) => {
   return (req, res, next) => {
-    if(req.query.token){
-      res.send("Welcome User <a href=\'/logout'>click to logout</a>");
-    }
-    if (req.headers.authorization) {
-      const tokenParts = req.headers.authorization.split(' ');
-      
-      if (tokenParts[0] === 'Bearer' && tokenParts[1].match(/\S+\.\S+\.\S+/) !== null) {
-  
-  
-        try {
-          const verification = jsonwebtoken.verify(tokenParts[1], process.env.ACCESS_TOKEN_SECRET);
-          var temp = true;
-          var status_list = '';
-          status_arr.forEach((status) => {
-            status_list=status_list + ', ' +status
-            if(verification.sub.status=== status){
-              req.jwt = verification;
-              temp = false;
-              next();
+    if(req.query.is_dashboard){
+      if (req.headers.authorization) {
+        const tokenParts = req.headers.authorization.split(' ');
+        
+        if (tokenParts[0] === 'Bearer' && tokenParts[1].match(/\S+\.\S+\.\S+/) !== null) {
+    
+    
+          try {
+            const verification = jsonwebtoken.verify(tokenParts[1], process.env.ACCESS_TOKEN_SECRET);
+            var temp = true;
+            var status_list = '';
+            status_arr.forEach((status) => {
+              status_list=status_list + ', ' +status
+              if(verification.sub.status=== status){
+                req.jwt = verification;
+                temp = false;
+                next();
+              }
+            });
+            if(temp){
+              const flash_body = {code :200, success: false, message: "You are not" +  status_list};
+              req.flash('flash_body', flash_body);
+              res.redirect('/');
             }
-          });
-          if(temp){
-            res.status(200).json({ code :200, success: false, message: "You are not" +  status_list});
+    
+          } catch (err) {
+            const flash_body = {code :200, success: false, message: "Please login to access this functionality"};
+            req.flash('flash_body', flash_body);
+            res.redirect('/');
           }
-  
-        } catch (err) {
+    
+        } else {
+          const flash_body = {code :200, success: false, message: "Please login to access this functionality"};
+          req.flash('flash_body', flash_body);
+          res.redirect('/');
+        }
+      } else {
+        const flash_body = {code :200, success: false, message: "Please login to access this functionality"};
+        req.flash('flash_body', flash_body);
+        res.redirect('/');
+      }
+    }else{
+      if (req.headers.authorization) {
+        const tokenParts = req.headers.authorization.split(' ');
+        
+        if (tokenParts[0] === 'Bearer' && tokenParts[1].match(/\S+\.\S+\.\S+/) !== null) {
+    
+    
+          try {
+            const verification = jsonwebtoken.verify(tokenParts[1], process.env.ACCESS_TOKEN_SECRET);
+            var temp = true;
+            var status_list = '';
+            status_arr.forEach((status) => {
+              status_list=status_list + ', ' +status
+              if(verification.sub.status=== status){
+                req.jwt = verification;
+                temp = false;
+                next();
+              }
+            });
+            if(temp){
+              res.status(200).json({ code :200, success: false, message: "You are not" +  status_list});
+            }
+    
+          } catch (err) {
+            res.status(200).json({ code :200, success: false, message: "You must login to visit this route" });
+          }
+    
+        } else {
           res.status(200).json({ code :200, success: false, message: "You must login to visit this route" });
         }
-  
       } else {
         res.status(200).json({ code :200, success: false, message: "You must login to visit this route" });
       }
-    } else {
-      res.status(200).json({ code :200, success: false, message: "You must login to visit this route" });
     }
   }
 }

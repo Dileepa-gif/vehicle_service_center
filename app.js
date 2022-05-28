@@ -2,8 +2,11 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts')
 const app = express();
+
 const session = require('express-session');
-const flash = require('connect-flash');
+const coolieParser = require('cookie-parser');
+const flash =  require('connect-flash');
+
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const routes = require('./routes');
@@ -24,7 +27,7 @@ app.use('/css', express.static(__dirname + 'public/css'))
 app.use('/js', express.static(__dirname + 'public/js'))
 app.use('/img', express.static(__dirname + 'public/img'))
 
-console.log()
+
 
 // Set Views
 app.use(expressLayouts);
@@ -48,12 +51,17 @@ app.use((req, res, next) => {
 
 
 
+app.use(coolieParser('qwertyuiop'));
 app.use(session({
-    secret: 'secret key',
-    resave: false,
-    saveUninitialized: false
-  }));
+    secret : 'asdfghjkl',
+    cookie: {maxAge : 60000},
+    resave: true,
+    saveUninitialized: true
+}));
+
 app.use(flash());
+
+
 // Routes
 app.use('/', routes);
 
