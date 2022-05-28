@@ -33,6 +33,9 @@ function issueJWT(user, status) {
 
 const authMiddleware = (status_arr) => {
   return (req, res, next) => {
+    if(req.query.token){
+      res.send("Welcome User <a href=\'/logout'>click to logout</a>");
+    }
     if (req.headers.authorization) {
       const tokenParts = req.headers.authorization.split(' ');
       

@@ -1,13 +1,38 @@
 .body { 
-    background-color: aqua;
+   background-image: url("/img/stations.jpg");   
+   background-color: aqua;
  }
 
  .wrapper{
-     width : 700px;
+     width : 100%;
      margin: 0 auto;
      background-color: rgb(255, 255, 255);
      padding: 10px;
  }
+ 
+
+/* header */
+.navbar{
+   height: auto;
+   background: rgb(0,0,0);
+   background: linear-gradient(90deg, rgba(0,0,0,1) 19%, rgba(231,148,32,0.8914916308320203) 39%, rgba(253,219,150,0) 76%, rgba(251,236,198,0.01193981010372902) 100%);
+}
+
+.company-name{
+   font-weight: bold;
+   font-style: italic;
+   background: rgb(247, 247, 247);
+   color: transparent;
+   background-clip: text;
+   -webkit-background-clip: text;
+ 
+}
+
+.login_btn{
+   background: rgb(97,40,4);
+   background: linear-gradient(0deg, rgba(97,40,4,1) 0%, rgba(228,152,40,1) 22%, rgba(253,219,150,1) 100%);
+   margin: 10px;
+}
 
  header, footer {
    
@@ -15,20 +40,47 @@
     background-color: rgb(199, 241, 223);
     padding: 10px;
  }
+ /* header */
 
- .layout-sidebar{
-     display: grid;
-     grid-template-columns: 1fr 2fr;
- } 
 
- side{
-    background-color: darkcyan;
-    color: azure;
-    padding: 20px;
+ /* sidebar */
+ .side-bar{
+   background: rgb(0,0,0);
+   background: linear-gradient(0deg, rgba(0,0,0,0.6842087176667542) 0%, rgba(222,205,182,0.38448882971157217) 100%);
+   color: azure;
+   padding: 10px;
+   height: 800px;
  }
+.list-group-item:hover{
+   background: rgb(97,40,4);
+   background: linear-gradient(0deg, rgba(97,40,4,1) 0%, rgba(228,152,40,1) 22%, rgba(253,219,150,1) 100%);
+   transition: 0.3s;
+   color: azure;
+}
+  /* sidebar */
 
- main{
-    background-color: rgb(225, 228, 228);
+
+
+/* main-bar */
+.main-bar{
+   padding: 10px;
+   height: 800px;
+ }
+/* main-bar */
+
+
+/* message-bar */
+.message-bar{
+   padding: 10px;
+   height: 800px;
+ }
+/* message-bar */
+
+
+
+ .main{
+    background-color: rgb(60, 188, 188);
     color: rgb(0, 4, 4);
     padding: 20px;
- }
+ } 
+
