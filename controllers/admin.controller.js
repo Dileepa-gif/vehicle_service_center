@@ -77,34 +77,21 @@ exports.login = async function (req, res) {
 
         if (admin[0].hash === hashVerify) {
           const tokenObject = auth.issueJWT(admin[0], "ADMIN");
-
-          res.status(200).json({
-            code: 200,
-            success: true,
-            token: tokenObject,
-          });
+          req.flash('flash_body', {code :200, success: true, message: "Successfully logged", token: tokenObject});
+          return res.redirect('/');
         } else {
-          res.status(200).json({
-            code: 200,
-            success: false,
-            message: "you entered a wrong password",
-          });
+          req.flash('flash_body', {code :200, success: false, message: "You entered a wrong password"});
+          return res.redirect('/login_page');
         }
       } else {
-        return res.status(200).json({
-          code: 200,
-          success: false,
-          message: "This email not registered",
-        });
+        req.flash('flash_body', {code :200, success: false, message: "This email not registered"});
+        return res.redirect('/login_page');
       }
     })
     .catch((error) => {
       console.log(error);
-      return res.status(200).json({
-        code: 200,
-        success: false,
-        message: error.message,
-      });
+      req.flash('flash_body', {code :200, success: false, message: error.message});
+      return res.redirect('/');
     });
 };
 

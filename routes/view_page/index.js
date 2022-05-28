@@ -5,6 +5,7 @@ var viewController = require('../../controllers/view_page.controller');
 
 
 routes.get('', viewController.home);
+routes.get('/login_page', viewController.login_page);
 // routes.post('/create',auth.authMiddleware(["CUSTOMER"]), vehicleController.create);
 // routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), vehicleController.update);
 // routes.delete("/delete/:id", auth.authMiddleware(["ADMIN", "CUSTOMER"]), vehicleController.delete);

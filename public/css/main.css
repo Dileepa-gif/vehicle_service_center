@@ -64,7 +64,6 @@
 /* main-bar */
 .main-bar{
    padding: 10px;
-   height: 800px;
  }
 /* main-bar */
 
@@ -72,11 +71,27 @@
 /* message-bar */
 .message-bar{
    padding: 10px;
-   height: 800px;
  }
 /* message-bar */
 
 
+ /* login-bar */
+ .login-bar{
+   color: azure;
+   padding: 10px;
+   height: 800px;
+ }
+  /* login-bar */
+
+
+/* login-form */
+.login-form{
+   background: rgb(0,0,0);
+   background: linear-gradient(0deg, rgba(0,0,0,0.6842087176667542) 0%, rgba(222,205,182,0.38448882971157217) 100%);
+   color: azure;
+   padding: 10px;
+ }
+/* login-form */
 
  .main{
     background-color: rgb(60, 188, 188);
