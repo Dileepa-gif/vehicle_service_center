@@ -9,6 +9,7 @@ import Login from "./components/Login/login";
 import Home from "./components/Home";
 import EmployeeList from "./components/Employee/employee_list";
 import AddEmployee from "./components/Employee/add_employee";
+import EditEmployee from "./components/Employee/edit_employee";
 
 
 
@@ -24,6 +25,7 @@ function App() {
               <Route path="/home" component={Home} />
               <Route path="/employee_list" component={EmployeeList} />
               <Route path="/add_employee" component={AddEmployee} />
+              <Route path="/edit_employee/:id" component={EditEmployee} />
 
             
             </Switch>
