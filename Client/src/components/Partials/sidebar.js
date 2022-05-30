@@ -19,6 +19,7 @@ export default function Sidebar(props) {
       </div>
 
       <ul className="list-unstyled components">
+      {user && user.sub.status=== 'ADMIN' && 
         <li>
           <a
             href="#homeSubmenu"
@@ -36,7 +37,7 @@ export default function Sidebar(props) {
               <a href="/add_employee">Add Employee</a>
             </li>
           </ul>
-        </li>
+        </li>}
         <li>
           <a href="#">About</a>
         </li>

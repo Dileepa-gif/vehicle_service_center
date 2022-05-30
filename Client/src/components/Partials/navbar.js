@@ -20,7 +20,6 @@ export default function Navbar(props) {
       <div className="container-fluid">
         <button type="button" id="sidebarCollapse" className="btn btn-info">
           <i className="fas fa-align-left"></i>
-          <span>Toggle Sidebar</span>
         </button>
         <button
           className="btn btn-dark d-inline-block d-lg-none ml-auto"
@@ -37,7 +36,7 @@ export default function Navbar(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="nav navbar-nav ml-auto">
             <li className="nav-item">
-              <a href={`/edit/${user.sub.id}`}>
+              <a href={`/edit_employee/${user.sub.id}`}>
                 <button type="button" className="btn btn-outline-primary">
                   <i className="ti-user" />
                   {"  "}

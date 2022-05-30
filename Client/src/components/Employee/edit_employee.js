@@ -4,18 +4,8 @@ import Navbar from "../Partials/navbar";
 import Sidebar from "../Partials/sidebar";
 import "../../App.css";
 
-export default function EmployeeList(props) {
+export default function EditEmployee(props) {
   const [user, setUser] = useState("");
-
-  useEffect(() => {
-    const tokenObject = JSON.parse(localStorage.getItem("tokenObject"));
-    if (tokenObject) {
-      setUser(tokenObject);
-    } else {
-      window.location = "/";
-    }
-  }, []);
-
   const [employeeData, setEmployeeData] = useState({
     first_name: "",
     last_name: "",
@@ -30,11 +20,51 @@ export default function EmployeeList(props) {
     success: "",
     message: "",
   });
+  
+
+  useEffect(() => {
+    const tokenObject = JSON.parse(localStorage.getItem("tokenObject"));
+    if (tokenObject) {
+      setUser(tokenObject);
+      const id = props.match.params.id;
+      axios
+        .get(`/employee/getEmployeeById/${id}`, {
+          headers: {
+            Authorization: tokenObject.token,
+          },
+        })
+        .then((res) => {
+          if (res.data.success) {
+            setEmployeeData({
+              first_name: res.data.data[0].first_name,
+              last_name: res.data.data[0].last_name,
+              email: res.data.data[0].email,
+              nic_number: res.data.data[0].nic_number,
+              phone_number: res.data.data[0].phone_number,
+              address: res.data.data[0].address,
+            });
+          } else {
+            setMessage({
+              status: true,
+              success: false,
+              message: res.data.message,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log("error = " + error);
+         window.location = "/";
+        });
+    } else {
+      window.location = "/";
+    }
+  }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
+    const id = props.match.params.id;
     axios
-      .post(`/employee/register`, employeeData, {
+      .put(`employee/update/${id}`, employeeData, {
         headers: {
           Authorization: user.token,
         },
@@ -45,14 +75,6 @@ export default function EmployeeList(props) {
             status: true,
             success: true,
             message: res.data.message,
-          });
-          setEmployeeData({
-            first_name: "",
-            last_name: "",
-            email: "",
-            nic_number: "",
-            phone_number: "",
-            address: "",
           });
         } else {
           setMessage({
@@ -69,7 +91,7 @@ export default function EmployeeList(props) {
       <Sidebar />
 
       <div id="content">
-        <div class="container">
+        <div className="container">
           <div className="row">
             <div className="col">
               <Navbar />
@@ -78,7 +100,7 @@ export default function EmployeeList(props) {
 
           <div className="row">
             <div className="col">
-              <h2>New Employee</h2>
+              <h2>Employee Profile</h2>
             </div>
           </div>
           <div className="row">
@@ -221,7 +243,7 @@ export default function EmployeeList(props) {
                 </div>
 
                 <button type="submit" className="btn btn-primary mr-2">
-                  Submit
+                  Update
                 </button>
               </form>
             </div>
