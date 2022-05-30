@@ -36,13 +36,24 @@ export default function Navbar(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="nav navbar-nav ml-auto">
             <li className="nav-item">
-              <a href={`/edit_employee/${user.sub.id}`}>
-                <button type="button" className="btn btn-outline-primary">
-                  <i className="ti-user" />
-                  {"  "}
-                  {user && <span>{user.sub.first_name}</span>}
-                </button>
-              </a>
+              {user && user.sub.status === "ADMIN" && (
+                <a href={`/edit_admin/${user.sub.id}`}>
+                  <button type="button" className="btn btn-outline-primary">
+                    <i className="ti-user" />
+                    {"  "}
+                    {user && <span>{user.sub.first_name}</span>}
+                  </button>
+                </a>
+              )}
+              {user && user.sub.status === "EMPLOYEE" && (
+                <a href={`/edit_employee/${user.sub.id}`}>
+                  <button type="button" className="btn btn-outline-primary">
+                    <i className="ti-user" />
+                    {"  "}
+                    {user && <span>{user.sub.first_name}</span>}
+                  </button>
+                </a>
+              )}
             </li>
             <li className="nav-item">
               <a onClick={logout}>

@@ -15,32 +15,83 @@ export default function Sidebar(props) {
   return (
     <nav id="sidebar">
       <div className="sidebar-header">
-        <a href="/home"><h3>Vehicle Service Center</h3></a>
+        <a href="/home">
+          <h3>Vehicle Service Center</h3>
+        </a>
       </div>
 
       <ul className="list-unstyled components">
-      {user && user.sub.status=== 'ADMIN' && 
+        {user && user.sub.status === "ADMIN" && (
+          <li>
+            <a
+              href="#admin"
+              data-toggle="collapse"
+              aria-expanded="false"
+              className="dropdown-toggle"
+            >
+              Admin
+            </a>
+            <ul className="collapse list-unstyled" id="admin">
+              <li>
+                <a href="/admin_list">Admin List</a>
+              </li>
+              <li>
+                <a href="/add_admin">Add Admin</a>
+              </li>
+            </ul>
+          </li>
+        )}
+
+        {user && user.sub.status === "ADMIN" && (
+          <li>
+            <a
+              href="#employee"
+              data-toggle="collapse"
+              aria-expanded="false"
+              className="dropdown-toggle"
+            >
+              Employee
+            </a>
+            <ul className="collapse list-unstyled" id="employee">
+              <li>
+                <a href="/employee_list">Employee List</a>
+              </li>
+              <li>
+                <a href="/add_employee">Add Employee</a>
+              </li>
+            </ul>
+          </li>
+        )}
+
         <li>
           <a
-            href="#homeSubmenu"
+            href="#upgrade_type"
             data-toggle="collapse"
             aria-expanded="false"
             className="dropdown-toggle"
           >
-            Employee
+            Upgrade Type
           </a>
-          <ul className="collapse list-unstyled" id="homeSubmenu">
+          <ul className="collapse list-unstyled" id="upgrade_type">
             <li>
-              <a href="/employee_list">Employee List</a>
+              <a href="/upgrade_type_list">Upgrade Types</a>
             </li>
-            <li>
-              <a href="/add_employee">Add Employee</a>
-            </li>
+            {user && user.sub.status === "ADMIN" && (
+              <li>
+                <a href="/add_upgrade_type">Add Upgrade Type</a>
+              </li>
+            )}
           </ul>
-        </li>}
-        <li>
-          <a href="#">About</a>
         </li>
+
+        <li>
+          <a href="/time_slot_list">Time Slot	</a>
+        </li>
+
+        <li>
+          <a href="/edit_system_status">System Status	</a>
+        </li>
+
         <li>
           <a
             href="#pageSubmenu"
