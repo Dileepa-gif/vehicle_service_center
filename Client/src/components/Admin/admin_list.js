@@ -3,9 +3,9 @@ import axios from "axios";
 import Navbar from "../Partials/navbar";
 import Sidebar from "../Partials/sidebar";
 
-export default function EmployeeList(props) {
+export default function AdminList(props) {
   const [user, setUser] = useState("");
-  const [employees, setEmployees] = useState([]);
+  const [admins, setAdmins] = useState([]);
   const [message, setMessage] = useState({
     status: false,
     success: "",
@@ -18,14 +18,14 @@ export default function EmployeeList(props) {
       setUser(tokenObject);
 
       axios
-        .get("/employee/getAllEmployees", {
+        .get("/admin/getAllAdmins", {
           headers: {
             Authorization: tokenObject.token,
           },
         })
         .then((res) => {
           if (res.data.success) {
-            setEmployees(res.data.data);
+            setAdmins(res.data.data);
           } else {
             setMessage({
               status: true,
@@ -43,9 +43,9 @@ export default function EmployeeList(props) {
     }
   }, []);
 
-  const deleteEmployee = (id) => {
+  const deleteAdmin = (id) => {
     axios
-      .delete(`employee/delete/${id}`, {
+      .delete(`admin/delete/${id}`, {
         headers: {
           Authorization: user.token,
         },
@@ -63,7 +63,7 @@ export default function EmployeeList(props) {
       })
       .catch((error) => {
         console.log("error = " + error);
-        window.location = "/employee_list";
+        window.location = "/admin_list";
       });
   };
 
@@ -81,7 +81,7 @@ export default function EmployeeList(props) {
 
         <div className="row">
           <div className="col">
-            <h2>List of all employees</h2>
+            <h2>List of all admins</h2>
           </div>
         </div>
         <div className="row">
@@ -106,7 +106,7 @@ export default function EmployeeList(props) {
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th>Employee Id</th>
+                    <th>Admin Id</th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email Address</th>
@@ -117,16 +117,16 @@ export default function EmployeeList(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {employees.map((employee, i) => {
+                  {admins.map((admin, i) => {
                     return (
                       <tr>
-                        <td>{employee.id}</td>
-                        <td>{employee.first_name}</td>
-                        <td>{employee.last_name}</td>
-                        <td>{employee.email}</td>
-                        <td>{employee.nic_number}</td>
-                        <td>{employee.phone_number}</td>
-                        <td>{employee.address}</td>
+                        <td>{admin.id}</td>
+                        <td>{admin.first_name}</td>
+                        <td>{admin.last_name}</td>
+                        <td>{admin.email}</td>
+                        <td>{admin.nic_number}</td>
+                        <td>{admin.phone_number}</td>
+                        <td>{admin.address}</td>
                         <td>
                           <div
                             className="btn-group"
@@ -136,7 +136,7 @@ export default function EmployeeList(props) {
                             <button
                               type="button"
                               className="btn btn-secondary"
-                              onClick={() => deleteEmployee(employee.id)}
+                              onClick={() => deleteAdmin(admin.id)}
                             >
                               Delete
                             </button>

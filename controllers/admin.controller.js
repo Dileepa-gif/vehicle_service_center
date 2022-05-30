@@ -190,14 +190,14 @@ exports.update = (req, res) => {
       }
       if (admin.length) {
         const updatedAdmin = new Admin({
-          first_name: req.body.first_name || employee[0].first_name,
-          last_name: req.body.last_name || employee[0].last_name,
-          email: req.body.email || employee[0].email,
-          hash: hash || employee[0].hash,
-          salt: salt || employee[0].salt,
-          nic_number: req.body.nic_number || employee[0].nic_number,
-          phone_number: req.body.phone_number || employee[0].phone_number,
-          address: req.body.address || employee[0].address,
+          first_name: req.body.first_name || admin[0].first_name,
+          last_name: req.body.last_name || admin[0].last_name,
+          email: req.body.email || admin[0].email,
+          hash: hash || admin[0].hash,
+          salt: salt || admin[0].salt,
+          nic_number: req.body.nic_number || admin[0].nic_number,
+          phone_number: req.body.phone_number || admin[0].phone_number,
+          address: req.body.address || admin[0].address,
         });
         updatedAdmin
           .update(req.params.id)

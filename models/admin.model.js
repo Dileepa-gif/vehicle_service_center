@@ -2,14 +2,14 @@ const db = require('../util/database');
 
 module.exports = class Admin {
     constructor(admin) {
-        this.first_name = employee.first_name;
-        this.last_name = employee.last_name;
-        this.email = employee.email;
-        this.hash = employee.hash;
-        this.salt = employee.salt;
-        this.nic_number = employee.nic_number;
-        this.phone_number = employee.phone_number;
-        this.address = employee.address;
+        this.first_name = admin.first_name;
+        this.last_name = admin.last_name;
+        this.email = admin.email;
+        this.hash = admin.hash;
+        this.salt = admin.salt;
+        this.nic_number = admin.nic_number;
+        this.phone_number = admin.phone_number;
+        this.address = admin.address;
     }
 
     static getAllAdmins() {
