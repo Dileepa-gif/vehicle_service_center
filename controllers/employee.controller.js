@@ -1,7 +1,7 @@
 const Employee = require("../models/employee.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
-const { employeePasswordSender} = require("../util/emailService");
+const { employeePasswordSender } = require("../util/emailService");
 
 exports.register = (req, res) => {
   Employee.getEmployeeByEmail(req.body.email)
@@ -19,7 +19,8 @@ exports.register = (req, res) => {
           .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
           .toString("hex");
         const newEmployee = new Employee({
-          name: req.body.name,
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
           email: req.body.email,
           hash: hash,
           salt: salt,
@@ -31,7 +32,7 @@ exports.register = (req, res) => {
           .create()
           .then(([result]) => {
             if (result.affectedRows === 1) {
-              employeePasswordSender(newEmployee,randomPassword);
+              employeePasswordSender(newEmployee, randomPassword);
               return res.status(200).json({
                 code: 200,
                 success: true,
@@ -65,7 +66,6 @@ exports.register = (req, res) => {
     });
 };
 
-
 exports.login = async function (req, res) {
   Employee.getEmployeeByEmail(req.body.email)
     .then(([employee]) => {
@@ -77,36 +77,48 @@ exports.login = async function (req, res) {
         if (employee[0].hash === hashVerify) {
           const tokenObject = auth.issueJWT(employee[0], "EMPLOYEE");
 
-          req.flash('flash_body', {code :200, success: true, message: "Successfully logged", token: tokenObject});
-          return res.redirect('/');
-
+          return res.status(200).json({
+            code: 200,
+            success: true,
+            message: "Successfully logged",
+            tokenObject: tokenObject,
+          });
         } else {
-          req.flash('flash_body', {code :200, success: false, message: "You entered a wrong password"});
-          return res.redirect('/login_page');
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: "You entered a wrong password",
+          });
         }
       } else {
-        req.flash('flash_body', {code :200, success: false, message: "This email not registered"});
-        return res.redirect('/login_page');
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This email not registered",
+        });
       }
     })
     .catch((error) => {
       console.log(error);
-      req.flash('flash_body', {code :200, success: false, message: error.message});
-      return res.redirect('/');
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
+      });
     });
 };
 
 exports.getAllEmployees = (req, res, next) => {
   Employee.getAllEmployees()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -128,14 +140,14 @@ exports.getAllEmployees = (req, res, next) => {
 exports.getEmployeeById = (req, res) => {
   Employee.getEmployeeById(req.params.id)
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -174,7 +186,8 @@ exports.update = (req, res) => {
       }
       if (employee.length) {
         const updatedEmployee = new Employee({
-          name: req.body.name || employee[0].name,
+          first_name: req.body.first_name || employee[0].first_name,
+          last_name: req.body.last_name || employee[0].last_name,
           email: req.body.email || employee[0].email,
           hash: hash || employee[0].hash,
           salt: salt || employee[0].salt,

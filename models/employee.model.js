@@ -2,7 +2,8 @@ const db = require('../util/database');
 
 module.exports = class Employee {
     constructor(employee) {
-        this.name = employee.name;
+        this.first_name = employee.first_name;
+        this.last_name = employee.last_name;
         this.email = employee.email;
         this.hash = employee.hash;
         this.salt = employee.salt;
@@ -32,14 +33,14 @@ module.exports = class Employee {
     }
 
     create() {
-        const query = `INSERT INTO employee (name, email, hash, salt, nic_number, phone_number, address) VALUE(?,?,?,?,?,?,?)`;
-        return db.execute(query, [this.name, this.email, this.hash, this.salt, this.nic_number, this.phone_number, this.address]);
+        const query = `INSERT INTO employee (first_name, last_name, email, hash, salt, nic_number, phone_number, address) VALUE(?,?,?,?,?,?,?,?)`;
+        return db.execute(query, [this.first_name, this.last_name, this.email, this.hash, this.salt, this.nic_number, this.phone_number, this.address]);
     }
 
 
     update(id) {
-        const query = `UPDATE employee set name = ?, email = ?, hash = ?, salt = ?,  nic_number = ?, phone_number = ?, address = ?  WHERE id = ? `;
-        return db.execute(query, [this.name, this.email, this.hash, this.salt, this.nic_number, this.phone_number, this.address, id]);
+        const query = `UPDATE employee set first_name = ?, last_name = ?, email = ?, hash = ?, salt = ?,  nic_number = ?, phone_number = ?, address = ?  WHERE id = ? `;
+        return db.execute(query, [this.first_name, this.last_name, this.email, this.hash, this.salt, this.nic_number, this.phone_number, this.address, id]);
     }
 
 };

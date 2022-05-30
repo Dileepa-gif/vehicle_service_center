@@ -10,7 +10,7 @@
 // };
 
 module.exports = {
-    serverPort: process.env.PORT || 3000,
+    serverPort: process.env.PORT || 8000,
     dbHost: "ebh2y8tqym512wqs.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
     dbName: "zcm9bc7845xszi7q",
     dbPort: "3306",
