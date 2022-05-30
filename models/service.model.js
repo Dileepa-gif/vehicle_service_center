@@ -12,7 +12,7 @@ module.exports = class Service {
     }
 
     static getAllServices() {
-        const query = `SELECT s.*, a.status, a.date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number  FROM service s 
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i:%s") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d %H:%i:%s") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number  FROM service s 
         INNER JOIN appointment a ON s.appointment_id = a.id
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
@@ -22,7 +22,7 @@ module.exports = class Service {
     }
 
     static getServiceById(id) {
-        const query = `SELECT s.*, a.status, a.date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM service s 
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i:%s") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d %H:%i:%s") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM service s 
         INNER JOIN appointment a ON s.appointment_id = a.id
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
@@ -32,7 +32,7 @@ module.exports = class Service {
     }
 
     static getHistoryByVehicleId(id) {
-        const query = `SELECT s.*, a.status, a.date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM service s 
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i:%s") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d %H:%i:%s") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM service s 
         INNER JOIN appointment a ON s.appointment_id = a.id
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id

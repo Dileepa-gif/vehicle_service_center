@@ -11,7 +11,7 @@ module.exports = class Appointment {
     }
 
     static getAllAppointments() {
-        const query = `SELECT a.*, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM appointment a 
+        const query = `SELECT a.id, a.status, DATE_FORMAT(a.date, "%Y:%m:%d %H:%i:%s") AS date, DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i:%s") AS created_at, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM appointment a 
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
         INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
@@ -20,7 +20,7 @@ module.exports = class Appointment {
     }
 
     static getAppointmentById(id) {
-        const query = `SELECT a.*, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM appointment a 
+        const query = `SELECT a.id, a.status, DATE_FORMAT(a.date, "%Y:%m:%d %H:%i:%s") AS date, DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i:%s") AS created_at, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS user_first_name, c.last_name AS user_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM appointment a 
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
         INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
