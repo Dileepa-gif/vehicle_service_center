@@ -10,6 +10,7 @@ export default function EditEmployee(props) {
     first_name: "",
     last_name: "",
     email: "",
+    password: "",
     nic_number: "",
     phone_number: "",
     address: "",
@@ -164,7 +165,7 @@ export default function EditEmployee(props) {
                     </div>
                   </div>
                 </div>
- 
+
 
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
@@ -181,6 +182,25 @@ export default function EditEmployee(props) {
                       })
                     }
                     placeholder="Email"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    className="form-control"
+                    id="email"
+                    value={employeeData.password}
+                    onChange={(e) =>
+                      setEmployeeData({
+                        ...employeeData,
+                        password: e.target.value,
+                      })
+                    }
+                    placeholder="Password"
                     required
                   />
                 </div>

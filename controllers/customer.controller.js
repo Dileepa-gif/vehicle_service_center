@@ -114,7 +114,7 @@ exports.register = (req, res) => {
             const newVehicle = new Vehicle({
               customer_id: req.params.id,
               vehicle_type: req.body.vehicle_type,
-              vehicle_number: req.body.vehicle_number,
+              vehicle_number: req.body.vehicle_number.toUpperCase(),
             });
 
             newVehicle

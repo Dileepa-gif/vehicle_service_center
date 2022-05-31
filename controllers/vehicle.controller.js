@@ -4,7 +4,7 @@ exports.create = (req, res) => {
   const newVehicle = new Vehicle({
     customer_id: req.jwt.sub.id,
     vehicle_type: req.body.vehicle_type,
-    vehicle_number: req.body.vehicle_number
+    vehicle_number: req.body.vehicle_number.toUpperCase()
   });
   newVehicle
     .create()
@@ -158,7 +158,7 @@ exports.update = (req, res) => {
   const updatedVehicle = new Vehicle({
     customer_id: req.jwt.sub.id,
     vehicle_type: req.body.vehicle_type,
-    vehicle_number: req.body.vehicle_number
+    vehicle_number: req.body.vehicle_number.toUpperCase()
   });
   updatedVehicle
     .update(req.params.id)

@@ -10,6 +10,7 @@ export default function EditAdmin(props) {
     first_name: "",
     last_name: "",
     email: "",
+    password: "",
     nic_number: "",
     phone_number: "",
     address: "",
@@ -181,6 +182,25 @@ export default function EditAdmin(props) {
                       })
                     }
                     placeholder="Email"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    className="form-control"
+                    id="email"
+                    value={adminData.password}
+                    onChange={(e) =>
+                      setAdminData({
+                        ...adminData,
+                        password: e.target.value,
+                      })
+                    }
+                    placeholder="Password"
                     required
                   />
                 </div>

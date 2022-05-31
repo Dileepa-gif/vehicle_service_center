@@ -1,6 +1,8 @@
 const Admin = require("../models/admin.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
+const { adminPasswordSender } = require("../util/emailService");
+
 
 exports.register = (req, res) => {
   Admin.getAdminByEmail(req.body.email)
@@ -12,11 +14,12 @@ exports.register = (req, res) => {
           message: "This email already registered",
         });
       } else {
+        var randomPassword = Math.random().toString(36).slice(-8);
         const salt = crypto.randomBytes(32).toString("hex");
         const hash = crypto
-          .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
+          .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
           .toString("hex");
-        const newAdmin = new Admin({
+          const newAdmin = new Admin({
           first_name: req.body.first_name,
           last_name: req.body.last_name,
           email: req.body.email,
@@ -30,17 +33,10 @@ exports.register = (req, res) => {
           .create()
           .then(([result]) => {
             if (result.affectedRows === 1) {
-              const tokenObject = auth.issueJWT(
-                {
-                  id: result.insertId,
-                  ...newAdmin,
-                },
-                "ADMIN"
-              );
+              adminPasswordSender(newAdmin, randomPassword);
               return res.status(200).json({
                 code: 200,
                 success: true,
-                tokenObject: tokenObject,
                 message: "Successfully registered",
               });
             } else {
@@ -243,28 +239,47 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-  Admin.delete(req.params.id)
-    .then(([result]) => {
-      if (result.affectedRows === 1) {
-        return res.status(200).json({
-          code: 200,
-          success: true,
-          message: "Successfully deleted",
-        });
-      } else {
+  Admin.getAllAdmins()
+  .then(([rows]) => {
+    if (rows.length>1) {
+      Admin.delete(req.params.id)
+      .then(([result]) => {
+        if (result.affectedRows === 1) {
+          return res.status(200).json({
+            code: 200,
+            success: true,
+            message: "Successfully deleted",
+          });
+        } else {
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: "Please try again",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
         return res.status(200).json({
           code: 200,
           success: false,
-          message: "Please try again",
+          message: error.message,
         });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
+      });
+    } else {
       return res.status(200).json({
         code: 200,
         success: false,
-        message: error.message,
+        message: "The system must have at least one administrator",
       });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
     });
+  });
 };
