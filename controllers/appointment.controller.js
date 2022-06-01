@@ -110,6 +110,37 @@ exports.getAllAppointments = (req, res) => {
     });
 };
 
+
+exports.getNotArrivedAppointments = (req, res) => {
+  Appointment.getNotArrivedAppointments()
+    .then(([rows]) => {
+      if(rows.length){
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      }else{
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
+      });
+    });
+};
+
+
 exports.getAppointmentById = (req, res) => {
   Appointment.getAppointmentById(req.params.id)
     .then(([rows]) => {
