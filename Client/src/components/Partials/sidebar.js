@@ -94,22 +94,19 @@ export default function Sidebar(props) {
 
         <li>
           <a
-            href="#pageSubmenu"
+            href="#appointment"
             data-toggle="collapse"
             aria-expanded="false"
             className="dropdown-toggle"
           >
-            Pages
+            Appointment
           </a>
-          <ul className="collapse list-unstyled" id="pageSubmenu">
+          <ul className="collapse list-unstyled" id="appointment">
             <li>
-              <a href="#">Page 1</a>
+              <a href="/all_appointment_list">All Appointments</a>
             </li>
             <li>
-              <a href="#">Page 2</a>
-            </li>
-            <li>
-              <a href="#">Page 3</a>
+              <a href="/not_arrived_appointment_list">Not Arrived Appointments</a>
             </li>
           </ul>
         </li>

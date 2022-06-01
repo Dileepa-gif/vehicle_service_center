@@ -25,6 +25,10 @@ import EditTimeSlot from "./components/TimeSlot/edit_time_slot";
 
 import EditSystemStatus from "./components/SystemStatus/edit_system_status";
 
+import AllAppointmentList from "./components/Appointment/all_appointment_list";
+import NotArrivedAppointmentList from "./components/Appointment/not_arrived_appointment_list";
+import EditAppointmentStatus from "./components/Appointment/edit_appointment_status";
+
 
 function App() {
   
@@ -51,6 +55,10 @@ function App() {
               <Route path="/edit_time_slot/:id" component={EditTimeSlot} />
 
               <Route path="/edit_system_status" component={EditSystemStatus} />
+
+              <Route path="/all_appointment_list" component={AllAppointmentList} />
+              <Route path="/not_arrived_appointment_list" component={NotArrivedAppointmentList} />
+              <Route path="/edit_appointment_status/:id" component={EditAppointmentStatus} />
 
             
             </Switch>

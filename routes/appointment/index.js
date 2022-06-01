@@ -5,8 +5,9 @@ var appointmentController = require('../../controllers/appointment.controller');
 
 routes.post('/create',auth.authMiddleware(["CUSTOMER"]), system_status.activation, appointmentController.create);
 routes.put("/update/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activation, appointmentController.update);
-routes.delete("/delete/:id", auth.authMiddleware(["CUSTOMER"]), system_status.activation, appointmentController.delete);
+routes.delete("/delete/:id", auth.authMiddleware(["ADMIN","CUSTOMER"]), system_status.activation, appointmentController.delete);
 routes.get('/getAllAppointments', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getAllAppointments);
+routes.get('/getNotArrivedAppointments', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getNotArrivedAppointments);
 routes.get('/getAppointmentById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getAppointmentById);
 routes.get('/changeStatus/:id', auth.authMiddleware(["EMPLOYEE"]), system_status.activation, appointmentController.changeStatus);
 
