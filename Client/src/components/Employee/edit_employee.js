@@ -7,6 +7,7 @@ import "../../App.css";
 export default function EditEmployee(props) {
   const [user, setUser] = useState("");
   const [employeeData, setEmployeeData] = useState({
+    id: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -37,6 +38,7 @@ export default function EditEmployee(props) {
         .then((res) => {
           if (res.data.success) {
             setEmployeeData({
+              id:res.data.data[0].id,
               first_name: res.data.data[0].first_name,
               last_name: res.data.data[0].last_name,
               email: res.data.data[0].email,
@@ -262,9 +264,11 @@ export default function EditEmployee(props) {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary mr-2">
-                  Update
-                </button>
+                {user && user.sub.id === employeeData.id && (
+                  <button type="submit" className="btn btn-primary mr-2">
+                    Update
+                  </button>
+                )}
               </form>
             </div>
           </div>

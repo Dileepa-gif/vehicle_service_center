@@ -12,22 +12,55 @@ module.exports = class Service {
     }
 
     static getAllServices() {
-        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS customer_first_name, c.last_name AS customer_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number  FROM service s 
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS customer_first_name, c.last_name AS customer_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number, e.first_name AS employee_first_name, e.last_name AS employee_last_name, e.email AS employee_email,
+        e.nic_number AS employee_nic_number, e.phone_number AS employee_phone_number, e.address AS employee_address FROM service s 
         INNER JOIN appointment a ON s.appointment_id = a.id
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
         INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
-        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id`;
+        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id
+        INNER JOIN employee e ON s.employee_id = e.id`;
         return db.execute(query);
     }
 
-    static getServiceById(id) {
-        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS customer_first_name, c.last_name AS customer_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number FROM service s 
+
+    static getActiveServices(id) {
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS customer_first_name, c.last_name AS customer_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number, e.first_name AS employee_first_name, e.last_name AS employee_last_name, e.email AS employee_email,
+        e.nic_number AS employee_nic_number, e.phone_number AS employee_phone_number, e.address AS employee_address FROM service s 
         INNER JOIN appointment a ON s.appointment_id = a.id
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
         INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
-        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id WHERE s.id = '${id}'`;
+        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id
+        INNER JOIN employee e ON s.employee_id = e.id
+        WHERE (s.is_done = 0 AND s.is_paid = 0) OR (s.is_done = 1 AND s.is_paid = 0)`;
+        return db.execute(query);
+    }
+
+    static getHistory(id) {
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS customer_first_name, c.last_name AS customer_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number, e.first_name AS employee_first_name, e.last_name AS employee_last_name, e.email AS employee_email,
+        e.nic_number AS employee_nic_number, e.phone_number AS employee_phone_number, e.address AS employee_address FROM service s 
+        INNER JOIN appointment a ON s.appointment_id = a.id
+        INNER JOIN customer c ON a.customer_id = c.id
+        INNER JOIN vehicle v ON a.vehicle_id = v.id
+        INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
+        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id
+        INNER JOIN employee e ON s.employee_id = e.id
+        WHERE s.is_done = 1 AND s.is_paid = 1`;
+        return db.execute(query);
+    }
+
+
+    static getServiceById(id) {
+        const query = `SELECT s.id, s.is_done, s.is_paid, s.payment_method, s.discount, s.rating, s.appointment_id, s.employee_id,DATE_FORMAT(a.created_at, "%Y:%m:%d %H:%i") AS created_at, a.status, DATE_FORMAT(a.date, "%Y:%m:%d") AS date, a.vehicle_id, a.customer_id, a.time_slot_id, a.upgrade_type_id, c.first_name AS customer_first_name, c.last_name AS customer_last_name, c.email, c.contact_number, c.nic_number, c.is_completed, ut.name AS upgrade_type_name, ut.description, ut.price, ts.start AS start_time, ts.end AS end_time, v.vehicle_type, v.vehicle_number, e.first_name AS employee_first_name, e.last_name AS employee_last_name, e.email AS employee_email,
+        e.nic_number AS employee_nic_number, e.phone_number AS employee_phone_number, e.address AS employee_address FROM service s 
+        INNER JOIN appointment a ON s.appointment_id = a.id
+        INNER JOIN customer c ON a.customer_id = c.id
+        INNER JOIN vehicle v ON a.vehicle_id = v.id
+        INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
+        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id
+        INNER JOIN employee e ON s.employee_id = e.id
+        WHERE s.id = '${id}'`;
         return db.execute(query);
     }
 

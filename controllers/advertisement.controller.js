@@ -24,11 +24,9 @@ exports.create = (req, res) => {
     .then(([result]) => {
       if (result.affectedRows === 1) {
         if (req.body.image_arr) {
-
           let image_arr = req.body.image_arr;
-          
+
           image_arr.forEach((image) => {
-            
             const newAdvertisementImage = new AdvertisementImage({
               advertisement_id: result.insertId,
               image: image,
@@ -212,7 +210,8 @@ exports.update = (req, res) => {
                 });
 
                 console.log("qwwqq", newAdvertisementImage);
-                newAdvertisementImage.create()
+                newAdvertisementImage
+                  .create()
                   .then(([inserted_images]) => {
                     console.log("inserted_images => ", inserted_images);
                   })
@@ -328,19 +327,28 @@ exports.delete = (req, res) => {
 };
 
 exports.changeStatus = (req, res) => {
-  Advertisement.changeStatus(req.params.id).then(([result]) => {
-    if (result.affectedRows === 1) {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: "Successfully updated",
-      });
-    } else {
+  Advertisement.changeStatus(req.params.id)
+    .then(([result]) => {
+      if (result.affectedRows === 1) {
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          message: "Successfully updated",
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "Please try again",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "Please try again",
+        message: error.message,
       });
-    }
-  });
+    });
 };

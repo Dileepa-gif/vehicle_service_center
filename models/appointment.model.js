@@ -24,7 +24,7 @@ module.exports = class Appointment {
         INNER JOIN customer c ON a.customer_id = c.id
         INNER JOIN vehicle v ON a.vehicle_id = v.id
         INNER JOIN  upgrade_type ut ON a.upgrade_type_id = ut.id
-        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id WHERE a.status = 'Reserved'`;
+        INNER JOIN  time_slot ts ON a.time_slot_id = ts.id WHERE a.status = 'Reserved' ORDER BY a.date`;
         return db.execute(query);
     }
 
@@ -59,7 +59,6 @@ module.exports = class Appointment {
     }
 
     static changeStatus(id) {
-        console.log(id)
         const query = `UPDATE appointment set status = 'Arrived' WHERE id = '${id}'`;
         return db.execute(query);
     }

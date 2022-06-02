@@ -23,6 +23,17 @@ a, a:hover, a:focus {
     transition: all 0.3s;
 }
 
+.table_link{
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
+    color: inherit;
+    font-size: inherit;
+}
+
+th{
+    padding: auto;
+}
+
 .navbar {
     padding: 15px 10px;
     background: #fff;

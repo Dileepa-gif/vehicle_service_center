@@ -7,6 +7,7 @@ import "../../App.css";
 export default function EditAdmin(props) {
   const [user, setUser] = useState("");
   const [adminData, setAdminData] = useState({
+    id: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -21,7 +22,6 @@ export default function EditAdmin(props) {
     success: "",
     message: "",
   });
-  
 
   useEffect(() => {
     const tokenObject = JSON.parse(localStorage.getItem("tokenObject"));
@@ -37,6 +37,7 @@ export default function EditAdmin(props) {
         .then((res) => {
           if (res.data.success) {
             setAdminData({
+              id: res.data.data[0].id,
               first_name: res.data.data[0].first_name,
               last_name: res.data.data[0].last_name,
               email: res.data.data[0].email,
@@ -54,7 +55,7 @@ export default function EditAdmin(props) {
         })
         .catch((error) => {
           console.log("error = " + error);
-         window.location = "/";
+          window.location = "/";
         });
     } else {
       window.location = "/";
@@ -165,7 +166,6 @@ export default function EditAdmin(props) {
                     </div>
                   </div>
                 </div>
- 
 
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
@@ -261,10 +261,11 @@ export default function EditAdmin(props) {
                     required
                   />
                 </div>
-
-                <button type="submit" className="btn btn-primary mr-2">
-                  Update
-                </button>
+                {user && user.sub.id === adminData.id && (
+                  <button type="submit" className="btn btn-primary mr-2">
+                    Update
+                  </button>
+                )}
               </form>
             </div>
           </div>

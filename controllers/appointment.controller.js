@@ -9,9 +9,12 @@ exports.create = (req, res) => {
     .then(([time_slot]) => {
       if (time_slot.length) {
         number_of_vehicles = time_slot[0].number_of_vehicles;
-        Appointment.getAppointmentsCountByTimeSlotIdAndDate(req.body.time_slot_id, req.body.date)
+        Appointment.getAppointmentsCountByTimeSlotIdAndDate(
+          req.body.time_slot_id,
+          req.body.date
+        )
           .then(([appointments]) => {
-            console.log(appointments)
+            console.log(appointments);
             if (appointments[0].count < number_of_vehicles) {
               const newAppointment = new Appointment({
                 status: "Reserved",
@@ -21,7 +24,7 @@ exports.create = (req, res) => {
                 time_slot_id: req.body.time_slot_id,
                 upgrade_type_id: req.body.upgrade_type_id,
               });
-              console.log("00 = ", newAppointment)
+              console.log("00 = ", newAppointment);
               newAppointment
                 .create()
                 .then(([result]) => {
@@ -84,14 +87,14 @@ exports.create = (req, res) => {
 exports.getAllAppointments = (req, res) => {
   Appointment.getAllAppointments()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -109,19 +112,18 @@ exports.getAllAppointments = (req, res) => {
       });
     });
 };
-
 
 exports.getNotArrivedAppointments = (req, res) => {
   Appointment.getNotArrivedAppointments()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -140,18 +142,17 @@ exports.getNotArrivedAppointments = (req, res) => {
     });
 };
 
-
 exports.getAppointmentById = (req, res) => {
   Appointment.getAppointmentById(req.params.id)
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -177,7 +178,10 @@ exports.update = (req, res) => {
       if (time_slot.length) {
         number_of_vehicles = time_slot[0].number_of_vehicles;
 
-        Appointment.getAppointmentsCountByTimeSlotIdAndDate(req.body.time_slot_id, req.body.date)
+        Appointment.getAppointmentsCountByTimeSlotIdAndDate(
+          req.body.time_slot_id,
+          req.body.date
+        )
           .then(([appointments]) => {
             if (appointments[0].count < number_of_vehicles) {
               const updatedAppointment = new Appointment({
@@ -276,7 +280,7 @@ exports.delete = (req, res) => {
 
 exports.changeStatus = (req, res) => {
   Appointment.changeStatus(req.params.id).then(([result]) => {
-    if (result.affectedRows === 1) {    
+    if (result.affectedRows === 1) {
       const newService = new Service({
         is_done: 0,
         is_paid: 0,
@@ -303,6 +307,14 @@ exports.changeStatus = (req, res) => {
             });
           }
         })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.message,
+          });
+        });
     } else {
       return res.status(200).json({
         code: 200,

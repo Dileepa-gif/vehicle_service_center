@@ -110,9 +110,29 @@ export default function Sidebar(props) {
             </li>
           </ul>
         </li>
+
         <li>
-          <a href="#">Portfolio</a>
+          <a
+            href="#service"
+            data-toggle="collapse"
+            aria-expanded="false"
+            className="dropdown-toggle"
+          >
+            Service
+          </a>
+          <ul className="collapse list-unstyled" id="service">
+            <li>
+              <a href="/all_services_list">All Services</a>
+            </li>
+            <li>
+              <a href="/active_services_list">Active Services</a>
+            </li>
+            <li>
+              <a href="/service_history_list">Service History</a>
+            </li>
+          </ul>
         </li>
+
         <li>
           <a href="#">Contact</a>
         </li>
