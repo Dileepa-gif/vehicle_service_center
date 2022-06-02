@@ -15,7 +15,7 @@ exports.employeePasswordSender = async function (user,randomPassword) {
       from: "vehicleservicecenterfct@gmail.com",
       to: user.email,
       subject: "Welcome to Vehicle Service Center!",
-      html: `<h1><b>Hello ${user.name} !</b></h1>
+      html: `<h1><b>Hello ${user.first_name} !</b></h1>
 
                 <h4><i>You're on your way!</i></h4>
                 <h5>Let's update your Employee Account</h5><br>
@@ -39,7 +39,7 @@ exports.adminPasswordSender = async function (user,randomPassword) {
       from: "vehicleservicecenterfct@gmail.com",
       to: user.email,
       subject: "Welcome to Vehicle Service Center!",
-      html: `<h1><b>Hello ${user.name} !</b></h1>
+      html: `<h1><b>Hello ${user.first_name} !</b></h1>
 
                 <h4><i>You're on your way!</i></h4>
                 <h5>Let's update your Admin Account</h5><br>
@@ -64,7 +64,7 @@ exports.customerForgotPasswordSender = async function (user,randomPassword) {
       from: "vehicleservicecenterfct@gmail.com",
       to: user.email,
       subject: "Please  log in and update your account",
-      html: `<h1><b>Hello ${user.name} !</b></h1>
+      html: `<h1><b>Hello ${user.first_name} !</b></h1>
 
                 <h4><i>Forgot password resetting</i></h4>
                 <h5>Let's log in and update your customer account by using below recovery password</h5><br>
