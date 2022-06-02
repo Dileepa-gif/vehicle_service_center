@@ -8,17 +8,17 @@ module.exports = class Vehicle {
     }
 
     static getAllVehicles() {
-        const query = "SELECT * FROM vehicle";
+        const query = "SELECT v.*, c.first_name, c.last_name, c.email, c.contact_number, c.nic_number, c.is_completed FROM vehicle v INNER JOIN customer c ON c.id = v.customer_id";
         return db.execute(query);
     }
 
     static getVehicleById(id) {
-        const query = `SELECT * FROM vehicle WHERE id = '${id}'`;
+        const query = `SELECT v.*, c.first_name, c.last_name, c.email, c.contact_number, c.nic_number, c.is_completed FROM vehicle v INNER JOIN customer c ON c.id = v.customer_id WHERE v.id = '${id}'`;
         return db.execute(query);
     }
 
     static getVehiclesByCustomerId(customer_id) {
-        const query = `SELECT * FROM vehicle WHERE customer_id = '${customer_id}'`;
+        const query = `SELECT v.*, c.first_name, c.last_name, c.email, c.contact_number, c.nic_number, c.is_completed FROM vehicle v INNER JOIN customer c ON c.id = v.customer_id WHERE v.customer_id = '${customer_id}'`;
         return db.execute(query);
     }
 

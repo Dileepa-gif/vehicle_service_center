@@ -72,7 +72,7 @@ export default function ServiceList(props) {
       <Sidebar />
 
       <div id="content">
-        <div class="container">
+        <div className="container">
           <div className="row">
             <div className="col">
               <Navbar />
@@ -81,7 +81,7 @@ export default function ServiceList(props) {
 
           <div className="row">
             <div className="col">
-              <h2>Service Bill</h2>
+              <h2>Service History</h2>
             </div>
           </div>
           <div className="row">

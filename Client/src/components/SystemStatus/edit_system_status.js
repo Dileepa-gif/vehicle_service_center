@@ -110,11 +110,11 @@ export default function EditSystemStatus(props) {
             <div className="col">
               <form action="" method="post" onSubmit={onSubmit}>
 
-                <div class="form-group">
+                <div className="form-group">
                   <label for="is_active">Activation Of System</label>
 
                   <select
-                    class="form-control"
+                    className="form-control"
                     id="is_active"
                     name="is_active"
                     placeholder="Select Status"

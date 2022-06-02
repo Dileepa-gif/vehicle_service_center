@@ -72,7 +72,7 @@ export default function AppointmentList(props) {
       <Sidebar />
 
       <div id="content">
-        <div class="container">
+        <div className="container">
           <div className="row">
             <div className="col">
               <Navbar />

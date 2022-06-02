@@ -7,6 +7,7 @@ import "../../App.css";
 export default function EditService(props) {
   const [user, setUser] = useState("");
   const [serviceData, setServiceData] = useState({
+    id: "",
     is_done: "",
     is_paid: "",
     payment_method: "",
@@ -67,6 +68,7 @@ export default function EditService(props) {
         .then((res) => {
           if (res.data.success) {
             setServiceData({
+              id: res.data.data[0].id,
               is_done: res.data.data[0].is_done,
               is_paid: res.data.data[0].is_paid,
               payment_method: res.data.data[0].payment_method,
@@ -185,7 +187,7 @@ export default function EditService(props) {
                   <tr>
                     <td>Service Id</td>
                     <td>:-</td>
-                    <td>{props.match.params.id}</td>
+                    <td>{serviceData.id}</td>
                   </tr>
 
                   <tr>
