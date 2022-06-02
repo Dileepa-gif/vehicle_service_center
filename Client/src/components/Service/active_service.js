@@ -7,15 +7,22 @@ import "../../App.css";
 export default function EditService(props) {
   const [user, setUser] = useState("");
   const [serviceData, setServiceData] = useState({
+    is_done: "",
+    is_paid: "",
+    payment_method: "",
+    discount: "",
+    rating: "",
+    appointment_id: "",
+    employee_id: "",
+    created_at: "",
     status: "",
     date: "",
-    created_at: "",
     vehicle_id: "",
     customer_id: "",
     time_slot_id: "",
     upgrade_type_id: "",
-    user_first_name: "",
-    user_last_name: "",
+    customer_first_name: "",
+    customer_last_name: "",
     email: "",
     contact_number: "",
     nic_number: "",
@@ -27,6 +34,12 @@ export default function EditService(props) {
     end_time: "",
     vehicle_type: "",
     vehicle_number: "",
+    employee_first_name: "",
+    employee_last_name: "",
+    employee_email: "",
+    employee_nic_number: "",
+    employee_phone_number: "",
+    employee_address: "",
   });
 
   const [message, setMessage] = useState({
@@ -49,15 +62,22 @@ export default function EditService(props) {
         .then((res) => {
           if (res.data.success) {
             setServiceData({
+              is_done: res.data.data[0].is_done,
+              is_paid: res.data.data[0].is_paid,
+              payment_method: res.data.data[0].payment_method,
+              discount: res.data.data[0].discount,
+              rating: res.data.data[0].rating,
+              appointment_id: res.data.data[0].appointment_id,
+              employee_id: res.data.data[0].employee_id,
+              created_at: res.data.data[0].created_at,
               status: res.data.data[0].status,
               date: res.data.data[0].date,
-              created_at: res.data.data[0].created_at,
               vehicle_id: res.data.data[0].vehicle_id,
               customer_id: res.data.data[0].customer_id,
               time_slot_id: res.data.data[0].time_slot_id,
               upgrade_type_id: res.data.data[0].upgrade_type_id,
-              user_first_name: res.data.data[0].user_first_name,
-              user_last_name: res.data.data[0].user_last_name,
+              customer_first_name: res.data.data[0].customer_first_name,
+              customer_last_name: res.data.data[0].customer_last_name,
               email: res.data.data[0].email,
               contact_number: res.data.data[0].contact_number,
               nic_number: res.data.data[0].nic_number,
@@ -69,6 +89,12 @@ export default function EditService(props) {
               end_time: res.data.data[0].end_time,
               vehicle_type: res.data.data[0].vehicle_type,
               vehicle_number: res.data.data[0].vehicle_number,
+              employee_first_name: res.data.data[0].employee_first_name,
+              employee_last_name: res.data.data[0].employee_last_name,
+              employee_email: res.data.data[0].employee_email,
+              employee_nic_number: res.data.data[0].employee_nic_number,
+              employee_phone_number: res.data.data[0].employee_phone_number,
+              employee_address: res.data.data[0].employee_address,
             });
           } else {
             setMessage({
@@ -87,17 +113,18 @@ export default function EditService(props) {
     }
   }, []);
 
-  const changeStatus = (id) => {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const id = props.match.params.id;
     axios
-      .get(`service/changeStatus/${id}`, {
+      .put(`service/done/${id}`, serviceData, {
         headers: {
           Authorization: user.token,
         },
       })
       .then((res) => {
-        console.log(res);
         if (res.data.success) {
-          window.location.reload(false);
+          window.location = `/completed_service/${props.match.params.id}`;
         } else {
           setMessage({
             status: true,
@@ -105,38 +132,8 @@ export default function EditService(props) {
             message: res.data.message,
           });
         }
-      })
-      .catch((error) => {
-        console.log("error = " + error);
-        window.location = "/not_arrived_service_list";
       });
   };
-
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
-  //   const id = props.match.params.id;
-  //   axios
-  //     .put(`service/update/${id}`, serviceData, {
-  //       headers: {
-  //         Authorization: user.token,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         setMessage({
-  //           status: true,
-  //           success: true,
-  //           message: res.data.message,
-  //         });
-  //       } else {
-  //         setMessage({
-  //           status: true,
-  //           success: false,
-  //           message: res.data.message,
-  //         });
-  //       }
-  //     });
-  // };
 
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
@@ -182,6 +179,26 @@ export default function EditService(props) {
                   </tr>
 
                   <tr>
+                    <td>Appointment Id</td>
+                    <td>:-</td>
+                    <td>
+                      <a
+                        className="table_link"
+                        href={`/edit_appointment_status/${serviceData.appointment_id}`}
+                      >
+                        {serviceData.appointment_id}
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Is Done</td>
+                    <td>:-</td>
+                    <td>{serviceData.is_done === 1 && <span>Yes</span>}{serviceData.is_done === 0 && <span>No</span>}</td>
+                  </tr>
+
+
+                  <tr>
                     <td>Vehicle Id</td>
                     <td>:-</td>
                     <td>{serviceData.vehicle_id}</td>
@@ -200,12 +217,6 @@ export default function EditService(props) {
                   </tr>
 
                   <tr>
-                    <td>Status</td>
-                    <td>:-</td>
-                    <td>{serviceData.status}</td>
-                  </tr>
-
-                  <tr>
                     <td>Upgrade Type</td>
                     <td>:-</td>
                     <td>{serviceData.upgrade_type_name}</td>
@@ -218,24 +229,15 @@ export default function EditService(props) {
                   </tr>
 
                   <tr>
-                    <td>Date</td>
+                    <td>Date And Time</td>
                     <td>:-</td>
-                    <td>{serviceData.date}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Time Slot</td>
-                    <td>:-</td>
-                    <td>
-                      {serviceData.start_time}.00 -{" "}
-                      {serviceData.end_time}.00
-                    </td>
+                    <td>{serviceData.created_at}</td>
                   </tr>
 
                   <tr>
                     <td>Price</td>
                     <td>:-</td>
-                    <td>{serviceData.price}</td>
+                    <td>{serviceData.price}.00</td>
                   </tr>
 
                   <tr>
@@ -248,41 +250,93 @@ export default function EditService(props) {
                     <td>Custom Name</td>
                     <td>:-</td>
                     <td>
-                      {serviceData.user_first_name}{" "}
-                      {serviceData.user_last_name}
+                      {serviceData.customer_first_name} {serviceData.customer_last_name}
                     </td>
                   </tr>
 
                   <tr>
-                    <td>Contact Number</td>
+                    <td>Customer's Contact Number</td>
                     <td>:-</td>
                     <td>{serviceData.contact_number}</td>
                   </tr>
 
                   <tr>
-                    <td>Nic Number</td>
+                    <td>Customer's Nic Number</td>
                     <td>:-</td>
                     <td>{serviceData.nic_number}</td>
                   </tr>
 
                   <tr>
-                    <td>Email</td>
+                    <td>Customer's Email</td>
                     <td>:-</td>
                     <td>{serviceData.email}</td>
                   </tr>
+
+                  <tr>
+                    <td>Employee Id</td>
+                    <td>:-</td>
+                    <td>
+                      <a
+                        className="table_link"
+                        href={`/edit_employee/${serviceData.employee_id}`}
+                      >
+                        {serviceData.employee_id}
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Employee Name</td>
+                    <td>:-</td>
+                    <td>
+                      {serviceData.employee_first_name}{" "}
+                      {serviceData.employee_last_name}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Employee's Contact Number</td>
+                    <td>:-</td>
+                    <td>{serviceData.employee_phone_number}</td>
+                  </tr>
                 </tbody>
               </table>
-              {user && user.sub.status === "EMPLOYEE" && serviceData.status === "Reserved" && (
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => changeStatus(props.match.params.id)}
-              >
-                Change Status
-              </button>
-              )}
             </div>
           </div>
+          {user && user.sub.status === "EMPLOYEE" && (
+            <div className="row">
+              <div className="col">
+                <form action="" method="post" onSubmit={onSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="discount">Discount</label>
+
+                    <select
+                      className="form-control"
+                      id="discount"
+                      name="discount"
+                      placeholder="Select Status"
+                      value={serviceData.discount}
+                      onChange={(e) =>
+                        setServiceData({
+                          ...serviceData,
+                          discount: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="0">0%</option>
+                      <option value="5">5%</option>
+                      <option value="10">10%</option>
+                      <option value="15">15%</option>
+                    </select>
+                  </div>
+
+                  <button type="submit" className="btn btn-primary mr-2">
+                    Service Done
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
