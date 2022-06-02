@@ -7,6 +7,7 @@ import "../../App.css";
 export default function EditService(props) {
   const [user, setUser] = useState("");
   const [serviceData, setServiceData] = useState({
+    id:"",
     is_done: "",
     is_paid: "",
     payment_method: "",
@@ -67,6 +68,7 @@ export default function EditService(props) {
         .then((res) => {
           if (res.data.success) {
             setServiceData({
+              id: res.data.data[0].id,
               is_done: res.data.data[0].is_done,
               is_paid: res.data.data[0].is_paid,
               payment_method: res.data.data[0].payment_method,
@@ -179,6 +181,89 @@ export default function EditService(props) {
               ) : null}
             </div>
           </div>
+
+          <br />
+          <div className="row">
+            <div className="col-8">
+              <h6>
+                <u>Vehicle Details</u>
+              </h6>
+              <table className="table">
+                <tbody>
+
+                  <tr>
+                    <td>Vehicle Id</td>
+                    <td>:-</td>
+                    <td>{serviceData.vehicle_id}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Vehicle Number</td>
+                    <td>:-</td>
+                    <td>{serviceData.vehicle_number}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Vehicle Type</td>
+                    <td>:-</td>
+                    <td>{serviceData.vehicle_type}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <br />
+          <div className="row">
+            <div className="col-8">
+              <h6>
+                <u>Service Details</u>
+              </h6>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Service Id</td>
+                    <td>:-</td>
+                    <td>{serviceData.id}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Appointment Id</td>
+                    <td>:-</td>
+                    <td>
+                      <a
+                        className="table_link"
+                        href={`/edit_appointment_status/${serviceData.appointment_id}`}
+                      >
+                        {serviceData.appointment_id}
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Upgrade Type</td>
+                    <td>:-</td>
+                    <td>{serviceData.upgrade_type_name}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Description</td>
+                    <td>:-</td>
+                    <td>{serviceData.description}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Date And Time</td>
+                    <td>:-</td>
+                    <td>{serviceData.created_at}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
           <br />
           <div className="row">
             <div className="col-8">
@@ -258,73 +343,6 @@ export default function EditService(props) {
                     <td>Contact Number</td>
                     <td>:-</td>
                     <td>{serviceData.employee_phone_number}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <br />
-          <div className="row">
-            <div className="col-8">
-              <h6>
-                <u>Service Details</u>
-              </h6>
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <td>Service Id</td>
-                    <td>:-</td>
-                    <td>{props.match.params.id}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Appointment Id</td>
-                    <td>:-</td>
-                    <td>
-                      <a
-                        className="table_link"
-                        href={`/edit_appointment_status/${serviceData.appointment_id}`}
-                      >
-                        {serviceData.appointment_id}
-                      </a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>Vehicle Id</td>
-                    <td>:-</td>
-                    <td>{serviceData.vehicle_id}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Vehicle Number</td>
-                    <td>:-</td>
-                    <td>{serviceData.vehicle_number}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Vehicle Type</td>
-                    <td>:-</td>
-                    <td>{serviceData.vehicle_type}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Upgrade Type</td>
-                    <td>:-</td>
-                    <td>{serviceData.upgrade_type_name}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Description</td>
-                    <td>:-</td>
-                    <td>{serviceData.description}</td>
-                  </tr>
-
-                  <tr>
-                    <td>Date And Time</td>
-                    <td>:-</td>
-                    <td>{serviceData.created_at}</td>
                   </tr>
                 </tbody>
               </table>

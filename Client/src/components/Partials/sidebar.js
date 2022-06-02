@@ -85,11 +85,7 @@ export default function Sidebar(props) {
         </li>
 
         <li>
-          <a href="/time_slot_list">Time Slot	</a>
-        </li>
-
-        <li>
-          <a href="/edit_system_status">System Status	</a>
+          <a href="/time_slot_list">Time Slot </a>
         </li>
 
         <li>
@@ -106,7 +102,9 @@ export default function Sidebar(props) {
               <a href="/all_appointment_list">All Appointments</a>
             </li>
             <li>
-              <a href="/not_arrived_appointment_list">Not Arrived Appointments</a>
+              <a href="/not_arrived_appointment_list">
+                Not Arrived Appointments
+              </a>
             </li>
           </ul>
         </li>
@@ -134,27 +132,34 @@ export default function Sidebar(props) {
         </li>
 
         <li>
-          <a href="#">Contact</a>
+          <a
+            href="#vehicle"
+            data-toggle="collapse"
+            aria-expanded="false"
+            className="dropdown-toggle"
+          >
+            Vehicle
+          </a>
+          <ul className="collapse list-unstyled" id="vehicle">
+            <li>
+              <a href="/all_vehicles_list">All Vehicle</a>
+            </li>
+            <li>
+              <a href="/active_services_list">Active Services</a>
+            </li>
+            <li>
+              <a href="/service_history_list">Service History</a>
+            </li>
+          </ul>
         </li>
       </ul>
 
       <ul className="list-unstyled CTAs">
-        <li>
-          <a
-            href="https://bootstrapious.com/tutorial/files/sidebar.zip"
-            className="download"
-          >
-            Download source
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://bootstrapious.com/p/bootstrap-sidebar"
-            className="article"
-          >
-            Back to article
-          </a>
-        </li>
+        {user && user.sub.status === "ADMIN" && (
+          <li>
+            <a href="/edit_system_status">System Status </a>
+          </li>
+        )}
       </ul>
     </nav>
   );

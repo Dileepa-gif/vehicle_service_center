@@ -16,9 +16,9 @@ export default function ServiceList(props) {
     const tokenObject = JSON.parse(localStorage.getItem("tokenObject"));
     if (tokenObject) {
       setUser(tokenObject);
-
+      const id = props.match.params.id;
       axios
-        .get("/service/getAllServices", {
+        .get(`/service/getHistoryByVehicleId/${id}`, {
           headers: {
             Authorization: tokenObject.token,
           },
@@ -81,7 +81,7 @@ export default function ServiceList(props) {
 
           <div className="row">
             <div className="col">
-              <h2>All Services</h2>
+              <h2>Service History</h2>
             </div>
           </div>
           <div className="row">
@@ -99,7 +99,55 @@ export default function ServiceList(props) {
               ) : null}
             </div>
           </div>
+          {services.length > 0 && (
+            <div className="row">
+              <div className="col">
+              <h6>
+                <u>Vehicle Details</u>
+              </h6>
+              <table className="table">
+                <tbody>
 
+                  <tr>
+                    <td>Vehicle Id</td>
+                    <td>:-</td>
+                    <td>{services[0].vehicle_id}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Vehicle Number</td>
+                    <td>:-</td>
+                    <td>{services[0].vehicle_number}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Vehicle Type</td>
+                    <td>:-</td>
+                    <td>{services[0].vehicle_type}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Owner</td>
+                    <td>:-</td>
+                    <td>
+                      {services[0].customer_first_name}{" "}
+                      {services[0].customer_last_name}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Contact Number</td>
+                    <td>:-</td>
+                    <td>{services[0].contact_number}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+              </div>
+            </div>
+          )}
+          <br/>
           <div className="row">
             <div className="col">
               <div className="table-responsive">
@@ -108,13 +156,11 @@ export default function ServiceList(props) {
                     <tr>
                       <th>Service Id</th>
                       <th>Appointment Id</th>
-                      <th>Vehicle Number</th>
-                      <th>Vehicle Type</th>
                       <th>Date And Time</th>
                       <th>Upgrade Type</th>
                       <th>Employee Id</th>
-                      <th>Is Done</th>
-                      <th>Is Paid</th>
+                      <th>Payment</th>
+                      <th>Discount</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -131,8 +177,6 @@ export default function ServiceList(props) {
                               {service.appointment_id}
                             </a>
                           </td>
-                          <td>{service.vehicle_number}</td>
-                          <td>{service.vehicle_type}</td>
                           <td>{service.created_at}</td>
                           <td>{service.upgrade_type_name}</td>
                           <td>
@@ -144,13 +188,10 @@ export default function ServiceList(props) {
                             </a>
                           </td>
                           <td>
-                            {service.is_done === 1 && <span>Yes</span>}
-                            {service.is_done === 0 && <span>No</span>}
+                            {service.price -
+                              (service.price * service.discount) / 100}
                           </td>
-                          <td>
-                            {service.is_paid === 1 && <span>Yes</span>}
-                            {service.is_paid === 0 && <span>No</span>}
-                          </td>
+                          <td>{service.discount}</td>
                           <td>
                             <div
                               className="btn-group"

@@ -7,6 +7,7 @@ import "../../App.css";
 export default function EditAppointment(props) {
   const [user, setUser] = useState("");
   const [appointmentData, setAppointmentData] = useState({
+    id:"",
     status: "",
     date: "",
     created_at: "",
@@ -49,6 +50,7 @@ export default function EditAppointment(props) {
         .then((res) => {
           if (res.data.success) {
             setAppointmentData({
+              id: res.data.data[0].id,
               status: res.data.data[0].status,
               date: res.data.data[0].date,
               created_at: res.data.data[0].created_at,
@@ -178,7 +180,7 @@ export default function EditAppointment(props) {
                   <tr>
                     <td>Appointment Id</td>
                     <td>:-</td>
-                    <td>{props.match.params.id}</td>
+                    <td>{appointmentData.id}</td>
                   </tr>
 
                   <tr>

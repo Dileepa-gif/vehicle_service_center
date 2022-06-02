@@ -3,9 +3,9 @@ import axios from "axios";
 import Navbar from "../Partials/navbar";
 import Sidebar from "../Partials/sidebar";
 
-export default function UpgradeTypeList(props) {
+export default function VehicleList(props) {
   const [user, setUser] = useState("");
-  const [upgrade_types, setUpgradeTypes] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [message, setMessage] = useState({
     status: false,
     success: "",
@@ -18,14 +18,14 @@ export default function UpgradeTypeList(props) {
       setUser(tokenObject);
 
       axios
-        .get("/upgrade_type/getAllUpgradeTypes", {
+        .get("/vehicle/getAllVehicles", {
           headers: {
             Authorization: tokenObject.token,
           },
         })
         .then((res) => {
           if (res.data.success) {
-            setUpgradeTypes(res.data.data);
+            setVehicles(res.data.data);
           } else {
             setMessage({
               status: true,
@@ -43,29 +43,29 @@ export default function UpgradeTypeList(props) {
     }
   }, []);
 
-  const deleteUpgradeType = (id) => {
-    axios
-      .delete(`upgrade_type/delete/${id}`, {
-        headers: {
-          Authorization: user.token,
-        },
-      })
-      .then((res) => {
-        if (res.data.success) {
-          window.location.reload(false);
-        } else {
-          setMessage({
-            status: true,
-            success: false,
-            message: res.data.message,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log("error = " + error);
-        window.location = "/upgrade_type_list";
-      });
-  };
+  // const deleteVehicle = (id) => {
+  //   axios
+  //     .delete(`vehicle/delete/${id}`, {
+  //       headers: {
+  //         Authorization: user.token,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         window.location.reload(false);
+  //       } else {
+  //         setMessage({
+  //           status: true,
+  //           success: false,
+  //           message: res.data.message,
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log("error = " + error);
+  //       window.location = "/all_vehicle_list";
+  //     });
+  // };
 
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
@@ -81,7 +81,7 @@ export default function UpgradeTypeList(props) {
 
           <div className="row">
             <div className="col">
-              <h2>Upgrade types</h2>
+              <h2>All Vehicles</h2>
             </div>
           </div>
           <div className="row">
@@ -106,50 +106,46 @@ export default function UpgradeTypeList(props) {
                 <table className="table table-striped">
                   <thead>
                     <tr>
-                      <th>Upgrade Type Id</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Price</th>
-                      {user && user.sub.status === "ADMIN" && (
+                      <th>Vehicle Id</th>
+                      <th>Vehicle Number</th>
+                      <th>Vehicle Type</th>
+                      <th>Customer Id</th>
+                      <th>Customer Name</th>
+                      <th>Contact Number</th>
                       <th>Actions</th>
-                      )}
                     </tr>
                   </thead>
                   <tbody>
-                    {upgrade_types.map((upgrade_type, i) => {
+                    {vehicles.map((vehicle, i) => {
                       return (
                         <tr>
-                          <td>{upgrade_type.id}</td>
-                          <td>{upgrade_type.name}</td>
-                          <td>{upgrade_type.description}</td>
-                          <td>{upgrade_type.price}</td>
-                          {user && user.sub.status === "ADMIN" && (
+                          <td>{vehicle.id}</td>
+                          <td>{vehicle.vehicle_number}</td>
+                          <td>{vehicle.vehicle_type}</td>
+                          <td>{vehicle.customer_id}</td>
+                          <td>
+                            {vehicle.first_name}{"  "}
+                            {vehicle.last_name}
+                          </td>
+                          <td>{vehicle.contact_number}</td>
                           <td>
                             <div
                               className="btn-group"
                               role="group"
                               aria-label="Basic example"
                             >
-                              <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() =>
-                                  deleteUpgradeType(upgrade_type.id)
-                                }
+                              <a
+                                href={`/service_history_by_vehicle/${vehicle.id}`}
                               >
-                                Delete
-                              </button>
-                              <a href={`/edit_upgrade_type/${upgrade_type.id}`}>
                                 <button
                                   type="button"
                                   className="btn btn-secondary"
                                 >
-                                  Edit
+                                  Show
                                 </button>
                               </a>
                             </div>
                           </td>
-                          )}
                         </tr>
                       );
                     })}

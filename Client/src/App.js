@@ -37,6 +37,9 @@ import ActiveService from "./components/Service/active_service";
 import CompletedService from "./components/Service/completed_service";
 import Bill from "./components/Service/bill";
 
+import AllVehiclesList from "./components/Vehicle/all_vehicles_list";
+import ServiceHistoryByVehicle from "./components/Vehicle/service_history_by_vehicle";
+
 
 
 function App() {
@@ -76,6 +79,9 @@ function App() {
               <Route path="/active_service/:id" component={ActiveService} />
               <Route path="/completed_service/:id" component={CompletedService} />
               <Route path="/bill/:id" component={Bill} />
+
+              <Route path="/all_vehicles_list" component={AllVehiclesList} />
+              <Route path="/service_history_by_vehicle/:id" component={ServiceHistoryByVehicle} />
 
             </Switch>
         </Router>
