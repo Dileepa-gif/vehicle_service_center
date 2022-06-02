@@ -135,6 +135,14 @@ exports.done = (req, res) => {
         message: "Please try again",
       });
     }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
   });
 };
 
@@ -153,6 +161,14 @@ exports.pay = (req, res) => {
         message: "Please try again",
       });
     }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
   });
 };
 
@@ -172,6 +188,14 @@ exports.addRating = (req, res) => {
         message: "Please try again",
       });
     }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
   });
 };
 

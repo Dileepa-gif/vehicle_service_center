@@ -109,24 +109,6 @@ export default function EditSystemStatus(props) {
           <div className="row">
             <div className="col">
               <form action="" method="post" onSubmit={onSubmit}>
-                {/* <div className="form-group">
-                  <label htmlFor="is_active">Activation Of System</label>
-                  <input
-                    type="text"
-                    name="is_active"
-                    className="form-control"
-                    id="is_active"
-                    value={system_statusData.is_active}
-                    onChange={(e) =>
-                      setSystemStatusData({
-                        ...system_statusData,
-                        is_active: e.target.value,
-                      })
-                    }
-                    placeholder="Activation Of System"
-                    required
-                  />
-                </div> */}
 
                 <div class="form-group">
                   <label for="is_active">Activation Of System</label>

@@ -33,7 +33,7 @@ import AllServicesList from "./components/Service/all_services_list";
 import ActiveServicesList from "./components/Service/active_services_list";
 import ServiceHistoryList from "./components/Service/service_history_list";
 
-import PendingService from "./components/Service/pending_service";
+import ActiveService from "./components/Service/active_service";
 import CompletedService from "./components/Service/completed_service";
 import Bill from "./components/Service/bill";
 
@@ -73,7 +73,7 @@ function App() {
               <Route path="/active_services_list" component={ActiveServicesList} />
               <Route path="/service_history_list" component={ServiceHistoryList} />
 
-              <Route path="/pending_service/:id" component={PendingService} />
+              <Route path="/active_service/:id" component={ActiveService} />
               <Route path="/completed_service/:id" component={CompletedService} />
               <Route path="/bill/:id" component={Bill} />
 

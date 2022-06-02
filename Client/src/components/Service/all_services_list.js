@@ -107,10 +107,10 @@ export default function ServiceList(props) {
                   <thead>
                     <tr>
                       <th>Service Id</th>
+                      <th>Appointment Id</th>
                       <th>Vehicle Number</th>
                       <th>Vehicle Type</th>
-                      <th>Date</th>
-                      <th>Time Slot</th>
+                      <th>Date And Time</th>
                       <th>Upgrade Type</th>
                       <th>Employee Id</th>
                       <th>Is Done</th>
@@ -123,31 +123,72 @@ export default function ServiceList(props) {
                       return (
                         <tr>
                           <td>{service.id}</td>
+                          <td>
+                            <a
+                              className="table_link"
+                              href={`/edit_appointment_status/${service.appointment_id}`}
+                            >
+                              {service.appointment_id}
+                            </a>
+                          </td>
                           <td>{service.vehicle_number}</td>
                           <td>{service.vehicle_type}</td>
-                          <td>{service.date}</td>
-                          <td>
-                            {service.start_time}.00 - {service.end_time}
-                            .00
-                          </td>
+                          <td>{service.created_at}</td>
                           <td>{service.upgrade_type_name}</td>
-                          <td><a className="table_link" href={`/edit_employee/${service.employee_id}`}>{service.employee_id}</a></td>
-                          <td>{service.is_done === 1 && (<span>Yes</span>)}{service.is_done === 0 && (<span>No</span>)}</td>
-                          <td>{service.is_paid === 1 && (<span>Yes</span>)}{service.is_paid === 0 && (<span>No</span>)}</td>
+                          <td>
+                            <a
+                              className="table_link"
+                              href={`/edit_employee/${service.employee_id}`}
+                            >
+                              {service.employee_id}
+                            </a>
+                          </td>
+                          <td>
+                            {service.is_done === 1 && <span>Yes</span>}
+                            {service.is_done === 0 && <span>No</span>}
+                          </td>
+                          <td>
+                            {service.is_paid === 1 && <span>Yes</span>}
+                            {service.is_paid === 0 && <span>No</span>}
+                          </td>
                           <td>
                             <div
                               className="btn-group"
                               role="group"
                               aria-label="Basic example"
                             >
-                              <a href={`/edit_service_status/${service.id}`}>
-                                <button
-                                  type="button"
-                                  className="btn btn-secondary"
-                                >
-                                  Show
-                                </button>
-                              </a>
+                              {service.is_done === 0 && (
+                                <a href={`/active_service/${service.id}`}>
+                                  <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                  >
+                                    Show
+                                  </button>
+                                </a>
+                              )}
+
+                              {service.is_done === 1 && service.is_paid === 0 && (
+                                <a href={`/completed_service/${service.id}`}>
+                                  <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                  >
+                                    Show
+                                  </button>
+                                </a>
+                              )}
+
+                              {service.is_done === 1 && service.is_paid === 1 && (
+                                <a href={`/bill/${service.id}`}>
+                                  <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                  >
+                                    Show
+                                  </button>
+                                </a>
+                              )}
                             </div>
                           </td>
                         </tr>
