@@ -62,17 +62,13 @@ app.use(session({
 app.use(flash());
 
 
-// Routes
+
 app.use('/', routes);
 
-// app.get('', (req, res) => {
-//     res.render('index', { text: 'This is EJS', title : 'Home Page'})
-// })
 
-// app.get('/about', (req, res) => {
-//     res.render('about', { layout:'./layouts/sidebar-layout', text: 'About Page', title : 'About Page'})
-// })
-
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static('./Client/build'))
+}
 
 
 app.listen(configs.serverPort, () => {

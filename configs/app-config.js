@@ -1,4 +1,4 @@
-/*server configurations*/
+require("dotenv").config({ path: ".env"});
 
 // module.exports = {
 //     serverPort: process.env.PORT || 8000,
