@@ -1,6 +1,5 @@
 
 const express = require('express');
-const expressLayouts = require('express-ejs-layouts')
 const app = express();
 
 const session = require('express-session');
@@ -21,18 +20,6 @@ app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use(cors());
 
-// Static Files
-app.use(express.static('public'))
-app.use('/css', express.static(__dirname + 'public/css'))
-app.use('/js', express.static(__dirname + 'public/js'))
-app.use('/img', express.static(__dirname + 'public/img'))
-
-
-
-// Set Views
-app.use(expressLayouts);
-app.set('layout', './layouts/sidebar-layout')
-app.set('view engine', 'ejs');
 
 
 app.use(json());
@@ -65,10 +52,19 @@ app.use(flash());
 
 app.use('/', routes);
 
+if(process.env.NODE_ENV ==="production"){
+    app.use(express.static(path.join(__dirname,'/Client/build')))
+    app.get('*', (req, res)=>{
+      res.sendFile(path.join(__dirname,'Client', 'build', 'index.html'));
+    })
+  }else{
+    app.get("/", (req, res) => {
+      res.send("Api running");
+    })
+  }
 
-if(process.env.NODE_ENV === "production"){
-    app.use(express.static('./Client/build'))
-}
+
+
 
 
 app.listen(configs.serverPort, () => {
