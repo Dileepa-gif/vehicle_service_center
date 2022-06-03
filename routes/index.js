@@ -11,7 +11,6 @@ const serviceRoutes = require('./service');
 const systemStatusRoutes = require('./system_status');
 const vehicleRoutes = require('./vehicle');
 const advertisementRoutes = require('./advertisement');
-const viewRoutes = require('./view_page');
 
 
 routes.use("/admin", adminRoutes);
@@ -24,7 +23,6 @@ routes.use("/service", serviceRoutes);
 routes.use("/system_status", systemStatusRoutes);
 routes.use("/vehicle", vehicleRoutes);
 routes.use("/advertisement", advertisementRoutes);
-routes.use("", viewRoutes);
 
 
 

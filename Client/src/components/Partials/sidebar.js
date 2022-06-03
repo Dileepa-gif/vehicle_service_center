@@ -132,25 +132,7 @@ export default function Sidebar(props) {
         </li>
 
         <li>
-          <a
-            href="#vehicle"
-            data-toggle="collapse"
-            aria-expanded="false"
-            className="dropdown-toggle"
-          >
-            Vehicle
-          </a>
-          <ul className="collapse list-unstyled" id="vehicle">
-            <li>
-              <a href="/all_vehicles_list">All Vehicle</a>
-            </li>
-            <li>
-              <a href="/active_services_list">Active Services</a>
-            </li>
-            <li>
-              <a href="/service_history_list">Service History</a>
-            </li>
-          </ul>
+          <a href="/all_vehicles_list">Vehicle</a>
         </li>
       </ul>
 
