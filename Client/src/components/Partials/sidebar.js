@@ -132,7 +132,11 @@ export default function Sidebar(props) {
         </li>
 
         <li>
-          <a href="/all_vehicles_list">Vehicle</a>
+          <a href="/all_vehicles_list">Vehicles</a>
+        </li>
+
+        <li>
+          <a href="/all_advertisement_list">Advertisements</a>
         </li>
       </ul>
 

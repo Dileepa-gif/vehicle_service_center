@@ -199,3 +199,18 @@ a.article, a.article:hover {
     height: 770px;
     overflow: auto;
   }
+
+
+  .small_img {
+    border: 1px solid rgb(46, 102, 151);
+    border-radius: 4px;
+    width: 100px;
+  }
+
+
+  .large_img {
+    border: 1px solid rgb(46, 102, 151);
+    border-radius: 4px;
+    width: 300px;
+  }
+  
