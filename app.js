@@ -63,7 +63,9 @@ if(process.env.NODE_ENV ==="production"){
     })
   }
 
-
+//   setInterval(() => {
+//     console.log("Function repeatedly executed after every 2 seconds!");
+//   }, 2000)
 
 
 

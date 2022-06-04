@@ -40,6 +40,9 @@ import Bill from "./components/Service/bill";
 import AllVehiclesList from "./components/Vehicle/all_vehicles_list";
 import ServiceHistoryByVehicle from "./components/Vehicle/service_history_by_vehicle";
 
+import AllAdvertisementList from "./components/Advertisement/all_advertisement_list";
+import Advertisement from "./components/Advertisement/advertisement";
+
 
 
 function App() {
@@ -82,6 +85,9 @@ function App() {
 
               <Route path="/all_vehicles_list" component={AllVehiclesList} />
               <Route path="/service_history_by_vehicle/:id" component={ServiceHistoryByVehicle} />
+
+              <Route path="/all_advertisement_list" component={AllAdvertisementList} />
+              <Route path="/Advertisement/:id" component={Advertisement} />
 
             </Switch>
         </Router>
