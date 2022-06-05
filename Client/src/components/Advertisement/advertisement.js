@@ -84,8 +84,28 @@ export default function EditAdvertisement(props) {
     }
   }, []);
 
-  const changeStatus = () => {
-    console.log(advertisementData.images[0].image);
+  const deleteAdvertisement = (id) => {
+    axios
+      .delete(`advertisement/delete/${id}`, {
+        headers: {
+          Authorization: user.token,
+        },
+      })
+      .then((res) => {
+        if (res.data.success) {
+          window.location = "/all_advertisement_list";
+        } else {
+          setMessage({
+            status: true,
+            success: false,
+            message: res.data.message,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("error = " + error);
+        window.location = "/all_advertisement_list";
+      });
   };
 
   return (
@@ -129,11 +149,8 @@ export default function EditAdvertisement(props) {
               advertisementData.images.map((image, i) => {
                 return (
                   <div className="col">
-                  <img
-                    src={image.image}
-                    className="large_img"
-                  />
-                </div>
+                    <img src={image.image} className="large_img" />
+                  </div>
                 );
               })}
           </div>
@@ -217,7 +234,7 @@ export default function EditAdvertisement(props) {
                   <tr>
                     <td>Price</td>
                     <td>:-</td>
-                    <td>{advertisementData.price}</td>
+                    <td>{advertisementData.price}.00</td>
                   </tr>
 
                   <tr>
@@ -233,7 +250,7 @@ export default function EditAdvertisement(props) {
                   </tr>
 
                   <tr>
-                    <td>Email</td>
+                    <td>Is Sold</td>
                     <td>:-</td>
                     <td>
                       {advertisementData.is_sold === 1 && <span>Yes</span>}
@@ -242,13 +259,19 @@ export default function EditAdvertisement(props) {
                   </tr>
                 </tbody>
               </table>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => changeStatus()}
+              <div
+                className="btn-group"
+                role="group"
+                aria-label="Basic example"
               >
-                Change Status
-              </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => deleteAdvertisement(advertisementData.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>

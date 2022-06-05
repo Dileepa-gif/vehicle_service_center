@@ -43,29 +43,29 @@ export default function AdvertisementList(props) {
     }
   }, []);
 
-  // const deleteAdvertisement = (id) => {
-  //   axios
-  //     .delete(`advertisement/delete/${id}`, {
-  //       headers: {
-  //         Authorization: user.token,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         window.location.reload(false);
-  //       } else {
-  //         setMessage({
-  //           status: true,
-  //           success: false,
-  //           message: res.data.message,
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log("error = " + error);
-  //       window.location = "/all_advertisement_list";
-  //     });
-  // };
+  const deleteAdvertisement = (id) => {
+    axios
+      .delete(`advertisement/delete/${id}`, {
+        headers: {
+          Authorization: user.token,
+        },
+      })
+      .then((res) => {
+        if (res.data.success) {
+          window.location.reload(false);
+        } else {
+          setMessage({
+            status: true,
+            success: false,
+            message: res.data.message,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("error = " + error);
+        window.location = "/all_advertisement_list";
+      });
+  };
 
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
@@ -124,7 +124,12 @@ export default function AdvertisementList(props) {
                       return (
                         <tr>
                           <td>{advertisement.id}</td>
-                          <td><img src={advertisement.thumbnail} className="small_img" /></td>
+                          <td>
+                            <img
+                              src={advertisement.thumbnail}
+                              className="small_img"
+                            />
+                          </td>
                           <td>{advertisement.brand}</td>
                           <td>{advertisement.brand}</td>
                           <td>{advertisement.model}</td>
@@ -142,9 +147,7 @@ export default function AdvertisementList(props) {
                               role="group"
                               aria-label="Basic example"
                             >
-                              <a
-                                href={`/Advertisement/${advertisement.id}`}
-                              >
+                              <a href={`/Advertisement/${advertisement.id}`}>
                                 <button
                                   type="button"
                                   className="btn btn-secondary"
@@ -152,6 +155,15 @@ export default function AdvertisementList(props) {
                                   Show
                                 </button>
                               </a>
+                              <button
+                                  type="button"
+                                  className="btn btn-secondary"
+                                  onClick={() =>
+                                    deleteAdvertisement(advertisement.id)
+                                  }
+                                >
+                                  Delete
+                                </button>
                             </div>
                           </td>
                         </tr>
