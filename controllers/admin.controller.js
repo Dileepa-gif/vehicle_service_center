@@ -1,7 +1,7 @@
 const Admin = require("../models/admin.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
-const { adminPasswordSender } = require("../util/emailService");
+const { adminPasswordSender, adminForgotPasswordSender } = require("../util/emailService");
 
 
 exports.register = (req, res) => {
@@ -106,6 +106,73 @@ exports.login = async function (req, res) {
         message: error.message,
       });
     });
+};
+
+exports.passwordReset = (req, res) => {
+  Admin.getAdminByEmail(req.body.email)
+  .then(([admin]) => {
+    var randomPassword = Math.random().toString(36).slice(-8);
+    let salt;
+    let hash;
+    if(randomPassword){
+      salt = crypto.randomBytes(32).toString("hex");
+      hash = crypto
+          .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
+          .toString("hex");
+    }
+    if (admin.length) {
+      const updatedAdmin = new Admin({
+        first_name: admin[0].first_name,
+        last_name: admin[0].last_name,
+        email: admin[0].email,
+        hash: hash,
+        salt: salt,
+        nic_number: admin[0].nic_number,
+        phone_number: admin[0].phone_number,
+        address: admin[0].address
+      });
+      updatedAdmin
+        .update(admin[0].id)
+        .then(([result]) => {
+          if (result.affectedRows === 1) {
+            adminForgotPasswordSender(updatedAdmin,randomPassword);
+            return res.status(200).json({
+              code: 200,
+              success: true,
+              message: "Please check your email.",
+            });
+          } else {
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: "Please try again",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.message,
+          });
+        });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: "This admin not found",
+      });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
+  });
 };
 
 exports.getAllAdmins = (req, res, next) => {

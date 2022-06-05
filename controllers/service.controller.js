@@ -90,6 +90,53 @@ exports.getHistory = (req, res) => {
     });
 };
 
+
+exports.getServicesRelevantToToday = (req, res) => {
+  var dateTime = require("node-datetime");
+  var dt = dateTime.create();
+  var today = dt.format("Y-m-d");
+  Service.getServicesRelevantToToday(today)
+    .then(([rows]) => {
+      if (rows.length) {
+        Service.getSummaryOfToday(today)
+        .then(([summary]) => {
+          return res.status(200).json({
+            code: 200,
+            success: true,
+            data: rows,
+            number_of_services: summary[0].number_of_services || 0,
+            total_price: summary[0].total_price || 0,
+            discounted_amount: summary[0].discounted_amount || 0,
+            message: "Data received",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.message,
+          });
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
+      });
+    });
+};
+
 exports.getServiceById = (req, res) => {
   Service.getServiceById(req.params.id)
     .then(([rows]) => {

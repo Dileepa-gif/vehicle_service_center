@@ -243,7 +243,6 @@ exports.passwordReset = (req, res) => {
         nic_number: customer[0].nic_number,
         is_completed: 1
       });
-      console.log(updatedCustomer)
       updatedCustomer
         .update(customer[0].id)
         .then(([result]) => {

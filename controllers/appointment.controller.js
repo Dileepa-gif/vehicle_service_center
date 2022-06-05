@@ -171,6 +171,62 @@ exports.getAppointmentById = (req, res) => {
     });
 };
 
+exports.getAppointmentsRelevantToToday = (req, res) => {
+  var dateTime = require("node-datetime");
+  var dt = dateTime.create();
+  var today = dt.format("Y-m-d");
+  Appointment.getAppointmentsRelevantToToday(today)
+    .then(([rows]) => {
+      if (rows.length) {
+        Appointment.getArrivedAppointmentsCount(today)
+          .then(([arrived_count]) => {
+            Appointment.getReservedAppointmentsCount(today)
+            .then(([reserved_count]) => {
+              return res.status(200).json({
+                code: 200,
+                success: true,
+                data: rows,
+                arrived_count: arrived_count[0].count || 0,
+                reserved_count: reserved_count[0].count || 0,
+                message: "Data received",
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+              return res.status(200).json({
+                code: 200,
+                success: false,
+                message: error.message,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: error.message,
+            });
+          });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
+      });
+    });
+};
+
 exports.update = (req, res) => {
   let number_of_vehicles = 0;
   TimeSlot.getTimeSlotById(req.body.time_slot_id)

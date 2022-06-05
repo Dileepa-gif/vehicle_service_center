@@ -43,6 +43,9 @@ import ServiceHistoryByVehicle from "./components/Vehicle/service_history_by_veh
 import AllAdvertisementList from "./components/Advertisement/all_advertisement_list";
 import Advertisement from "./components/Advertisement/advertisement";
 
+import AppointmentsRelevantToToday from "./components/Summary/appointments_relevant_to_today";
+import ServicesRelevantToToday from "./components/Summary/services_relevant_to_today";
+
 
 
 function App() {
@@ -88,6 +91,9 @@ function App() {
 
               <Route path="/all_advertisement_list" component={AllAdvertisementList} />
               <Route path="/Advertisement/:id" component={Advertisement} />
+
+              <Route path="/appointments_relevant_to_today" component={AppointmentsRelevantToToday} />
+              <Route path="/services_relevant_to_today" component={ServicesRelevantToToday} />
 
             </Switch>
         </Router>
