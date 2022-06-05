@@ -5,6 +5,7 @@ var employeeController = require('../../controllers/employee.controller');
 
 routes.post('/register', auth.authMiddleware(["ADMIN"]), employeeController.register);
 routes.post('/login', system_status.activation,employeeController.login);
+routes.post('/passwordReset', system_status.activation, employeeController.passwordReset);
 routes.put("/update/:id", auth.authMiddleware(["EMPLOYEE",]), system_status.activation, employeeController.update);
 routes.delete("/delete/:id", auth.authMiddleware(["ADMIN"]), employeeController.delete);
 routes.get('/getAllEmployees', auth.authMiddleware(["ADMIN"]), system_status.activation, employeeController.getAllEmployees);

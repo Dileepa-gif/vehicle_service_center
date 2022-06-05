@@ -1,7 +1,7 @@
 const Employee = require("../models/employee.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
-const { employeePasswordSender } = require("../util/emailService");
+const { employeePasswordSender, employeeForgotPasswordSender } = require("../util/emailService");
 
 exports.register = (req, res) => {
   Employee.getEmployeeByEmail(req.body.email)
@@ -106,6 +106,74 @@ exports.login = async function (req, res) {
         message: error.message,
       });
     });
+};
+
+
+exports.passwordReset = (req, res) => {
+  Employee.getEmployeeByEmail(req.body.email)
+  .then(([employee]) => {
+    var randomPassword = Math.random().toString(36).slice(-8);
+    let salt;
+    let hash;
+    if(randomPassword){
+      salt = crypto.randomBytes(32).toString("hex");
+      hash = crypto
+          .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
+          .toString("hex");
+    }
+    if (employee.length) {
+      const updatedEmployee = new Employee({
+        first_name: employee[0].first_name,
+        last_name: employee[0].last_name,
+        email: employee[0].email,
+        hash: hash,
+        salt: salt,
+        nic_number: employee[0].nic_number,
+        phone_number: employee[0].phone_number,
+        address: employee[0].address
+      });
+      updatedEmployee
+        .update(employee[0].id)
+        .then(([result]) => {
+          if (result.affectedRows === 1) {
+            employeeForgotPasswordSender(updatedEmployee,randomPassword);
+            return res.status(200).json({
+              code: 200,
+              success: true,
+              message: "Please check your email.",
+            });
+          } else {
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: "Please try again",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.message,
+          });
+        });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: "This employee not found",
+      });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
+  });
 };
 
 exports.getAllEmployees = (req, res, next) => {

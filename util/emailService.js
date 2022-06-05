@@ -57,8 +57,57 @@ exports.adminPasswordSender = async function (user,randomPassword) {
     });
 };
 
+
+exports.adminForgotPasswordSender = async function (user,randomPassword) {
+  transport
+    .sendMail({
+      from: "vehicleservicecenterfct@gmail.com",
+      to: user.email,
+      subject: "Please  log in and update your account",
+      html: `<h1><b>Hello ${user.first_name} !</b></h1>
+
+                <h4><i>Forgot password resetting</i></h4>
+                <h5>Let's log in and update your admin account by using below recovery password</h5><br>
+                <p><b>Email : </b>${user.email}</p>
+                <p><b>Password : </b>${randomPassword}</p><br>`,
+    })
+    .then(() => {
+      console.log("Email Sent to " + user.email + " to reset admin password.");
+    })
+    .catch(() => {
+      console.log(
+        "Email Not Sent to " + user.email + " to reset admin password."
+      );
+    });
+};
+
+
+
+exports.employeeForgotPasswordSender = async function (user,randomPassword) {
+  transport
+    .sendMail({
+      from: "vehicleservicecenterfct@gmail.com",
+      to: user.email,
+      subject: "Please  log in and update your account",
+      html: `<h1><b>Hello ${user.first_name} !</b></h1>
+
+                <h4><i>Forgot password resetting</i></h4>
+                <h5>Let's log in and update your employee account by using below recovery password</h5><br>
+                <p><b>Email : </b>${user.email}</p>
+                <p><b>Password : </b>${randomPassword}</p><br>`,
+    })
+    .then(() => {
+      console.log("Email Sent to " + user.email + " to reset employee password.");
+    })
+    .catch(() => {
+      console.log(
+        "Email Not Sent to " + user.email + " to reset employee password."
+      );
+    });
+};
+
+
 exports.customerForgotPasswordSender = async function (user,randomPassword) {
-  console.log(user);
   transport
     .sendMail({
       from: "vehicleservicecenterfct@gmail.com",
@@ -80,4 +129,6 @@ exports.customerForgotPasswordSender = async function (user,randomPassword) {
       );
     });
 };
+
+
 

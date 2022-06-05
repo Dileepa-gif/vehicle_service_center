@@ -138,6 +138,26 @@ export default function Sidebar(props) {
         <li>
           <a href="/all_advertisement_list">Advertisements</a>
         </li>
+
+        <li>
+          <a
+            href="#summary"
+            data-toggle="collapse"
+            aria-expanded="false"
+            className="dropdown-toggle"
+          >
+            Summary
+          </a>
+          <ul className="collapse list-unstyled" id="summary">
+            <li>
+              <a href="/appointments_relevant_to_today">Appointments relevant to today</a>
+            </li>
+            <li>
+              <a href="/services_relevant_to_today">Services relevant to today</a>
+            </li>
+          </ul>
+        </li> 
+
       </ul>
 
       <ul className="list-unstyled CTAs">
