@@ -20,7 +20,7 @@ export default function EditAdvertisement(props) {
     mileage: "",
     seller_name: "",
     city: "",
-    price: "",
+    price: 0,
     contact_number: "",
     is_sold: "",
     created_at: "",
@@ -234,7 +234,7 @@ export default function EditAdvertisement(props) {
                   <tr>
                     <td>Price</td>
                     <td>:-</td>
-                    <td>{advertisementData.price}.00</td>
+                    <td>{(advertisementData.price).toFixed(2)}</td>
                   </tr>
 
                   <tr>

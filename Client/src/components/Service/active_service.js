@@ -11,8 +11,8 @@ export default function EditService(props) {
     is_done: "",
     is_paid: "",
     payment_method: "",
-    discount: "",
-    rating: "",
+    discount: 0,
+    rating: 0,
     appointment_id: "",
     employee_id: "",
     created_at: "",
@@ -30,7 +30,7 @@ export default function EditService(props) {
     is_completed: "",
     upgrade_type_name: "",
     description: "",
-    price: "",
+    price: 0,
     start_time: "",
     end_time: "",
     vehicle_type: "",
@@ -239,7 +239,7 @@ export default function EditService(props) {
                   <tr>
                     <td>Price</td>
                     <td>:-</td>
-                    <td>{serviceData.price}.00</td>
+                    <td>{(serviceData.price).toFixed(2)}</td>
                   </tr>
 
                   <tr>

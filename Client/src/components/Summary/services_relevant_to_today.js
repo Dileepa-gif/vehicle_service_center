@@ -86,9 +86,9 @@ export default function ServiceList(props) {
           <div className="row">
             <div className="col">
               <p>Number of payments = {numberOfServices}</p>
-              <p>Value of all given services = {totalPrice}</p>
-              <p>Total discounted value = {discountedAmount}</p>
-              <p>Total income = {totalPrice - discountedAmount}</p>
+              <p>Value of all given services = {(totalPrice).toFixed(2)}</p>
+              <p>Total discounted value = {(discountedAmount).toFixed(2)}</p>
+              <p>Total income = {(totalPrice - discountedAmount).toFixed(2)}</p>
             </div>
           </div>
 

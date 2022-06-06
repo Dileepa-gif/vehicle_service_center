@@ -7,6 +7,7 @@
 body {
     font-family: 'Poppins', sans-serif;
     background: #fafafa;
+    height: 100%;
 }
 
 p {
@@ -66,7 +67,7 @@ th{
     left: 0;
     height: 100vh;
     z-index: 999;
-    background: #7386D5;
+    background: #322201;
     color: #fff;
     transition: all 0.3s;
 }
@@ -77,12 +78,12 @@ th{
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #6d7fcc;
+    background-image: linear-gradient(to left, #221f15, #4a443e);
 }
 
 #sidebar ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #47748b;
+    border-bottom: 1px solid #996805;
 }
 
 #sidebar ul p {
@@ -99,13 +100,13 @@ th{
     text-align: left;
 }
 #sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
+    color: #322201;
+    background: #ebd8b1;;
 }
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #fff;
-    background: #6d7fcc;
+    background: #996805;
 }
 
 
@@ -129,7 +130,7 @@ a[aria-expanded="true"]::before {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #6d7fcc;
+    background: #be8c28;
 }
 
 ul.CTAs {
@@ -145,10 +146,10 @@ ul.CTAs a {
 }
 a.download {
     background: #fff;
-    color: #7386D5;
+    color: #996805;
 }
 a.article, a.article:hover {
-    background: #6d7fcc !important;
+    background: #996805 !important;
     color: #fff !important;
 }
 
@@ -202,15 +203,33 @@ a.article, a.article:hover {
 
 
   .small_img {
-    border: 1px solid rgb(46, 102, 151);
+    border: 1px solid #996805;
     border-radius: 4px;
     width: 100px;
   }
 
 
   .large_img {
-    border: 1px solid rgb(46, 102, 151);
+    border: 1px solid #996805;
     border-radius: 4px;
     width: 300px;
+  }
+
+
+  .small-topic{
+    font-size: 30px;
+	font-weight: 600;
+	background-image: linear-gradient(to left, #b8a260, #845312);
+	color: transparent;
+	background-clip: text;
+	-webkit-background-clip: text;
+	text-align: center;
+  }
+
+
+  .main-app-div{
+    background: rgb(247,238,206);
+    background: linear-gradient(0deg, rgba(247,238,206,0.8186624991793592) 0%, rgba(235,229,207,1) 9%, rgba(247,247,247,0.09317230310092783) 100%);
+
   }
   
