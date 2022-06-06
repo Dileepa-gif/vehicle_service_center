@@ -16,7 +16,7 @@ export default function Sidebar(props) {
     <nav id="sidebar">
       <div className="sidebar-header">
         <a href="/home">
-          <h3>Vehicle Service Center</h3>
+          <h3 className="small-topic">Vehicle Service Center</h3>
         </a>
       </div>
 

@@ -193,6 +193,35 @@ exports.done = (req, res) => {
   });
 };
 
+exports.cashPaymentMethod = (req, res) => {
+  Service.cashPaymentMethod(req.params.id).then(([result]) => {
+    if (result.affectedRows === 1) {    
+      return res.status(200).json({
+        code: 200,
+        success: true,
+        message: "Successfully updated",
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: "Please try again",
+      });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.message,
+    });
+  });
+};
+
+
+
+
 exports.pay = (req, res) => {
   Service.pay(req.params.id, req.body.price, req.body.payment_method).then(([result]) => {
     if (result.affectedRows === 1) {    

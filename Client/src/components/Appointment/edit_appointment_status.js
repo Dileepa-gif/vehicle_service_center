@@ -23,7 +23,7 @@ export default function EditAppointment(props) {
     is_completed: "",
     upgrade_type_name: "",
     description: "",
-    price: "",
+    price: 0,
     start_time: "",
     end_time: "",
     vehicle_type: "",
@@ -237,7 +237,7 @@ export default function EditAppointment(props) {
                   <tr>
                     <td>Price</td>
                     <td>:-</td>
-                    <td>{appointmentData.price}</td>
+                    <td>{(appointmentData.price).toFixed(2)}</td>
                   </tr>
 
                   <tr>

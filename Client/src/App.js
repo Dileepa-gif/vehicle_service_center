@@ -1,11 +1,15 @@
 /** @format */
 import React, { useState, useEffect, Component  } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
 
 
 
-import Login from "./components/Login/login";
+import EmployeeLogin from "./components/Login/employee_login";
+import AdminLogin from "./components/Login/admin_login";
 import Home from "./components/Home";
 
 import AdminList from "./components/Admin/admin_list";
@@ -46,15 +50,19 @@ import Advertisement from "./components/Advertisement/advertisement";
 import AppointmentsRelevantToToday from "./components/Summary/appointments_relevant_to_today";
 import ServicesRelevantToToday from "./components/Summary/services_relevant_to_today";
 
+import AdminForgotPassword from "./components/ForgotPassword/admin_forgot_password";
+import EmployeeForgotPassword from "./components/ForgotPassword/employee_forgot_password";
+
 
 
 function App() {
   
   return (
-    <div>
+    <div className="main-app-div">
         <Router>
             <Switch>
-              <Route exact path="/" component={Login} />
+              <Route exact path="/" component={EmployeeLogin} />
+              <Route exact path="/admin_login" component={AdminLogin} />
               <Route path="/home" component={Home} />
 
               <Route path="/admin_list" component={AdminList} />
@@ -94,6 +102,9 @@ function App() {
 
               <Route path="/appointments_relevant_to_today" component={AppointmentsRelevantToToday} />
               <Route path="/services_relevant_to_today" component={ServicesRelevantToToday} />
+
+              <Route path="/admin_forgot_password" component={AdminForgotPassword} />
+              <Route path="/employee_forgot_password" component={EmployeeForgotPassword} />
 
             </Switch>
         </Router>

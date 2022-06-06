@@ -39,7 +39,7 @@ export default function Navbar(props) {
               {user && user.sub.status === "ADMIN" && (
                 <a href={`/edit_admin/${user.sub.id}`}>
                   <button type="button" className="btn btn-outline-primary">
-                    <i className="ti-user" />
+                    <i className="fas fa-user"></i>
                     {"  "}
                     {user && <span>{user.sub.first_name}</span>}
                   </button>
@@ -48,7 +48,7 @@ export default function Navbar(props) {
               {user && user.sub.status === "EMPLOYEE" && (
                 <a href={`/edit_employee/${user.sub.id}`}>
                   <button type="button" className="btn btn-outline-primary">
-                    <i className="ti-user" />
+                    <i className="fas fa-user"></i>
                     {"  "}
                     {user && <span>{user.sub.first_name}</span>}
                   </button>
@@ -58,7 +58,7 @@ export default function Navbar(props) {
             <li className="nav-item">
               <a onClick={logout}>
                 <button type="button" className="btn btn-outline-warning">
-                  <i className="ti-power-off" />
+                  <i className="fas fa-power-off"></i>
                   {"  "}
                   Logout
                 </button>

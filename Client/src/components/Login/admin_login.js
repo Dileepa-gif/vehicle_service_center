@@ -13,16 +13,20 @@ export default function Login(props) {
     }
   }, []);
 
+
+  const [formError, setFormError] = useState("");
+
   const [adminData, setAdminData] = useState({
     email: "",
     password: "",
   });
 
-  const [adminFormError, setAdminFormError] = useState("");
 
   const loginAdmin = (e) => {
     e.preventDefault();
-    console.log("sent data = " + adminData.email + ".." + adminData.password);
+    console.log(
+      "sent data = " + adminData.email + ".." + adminData.password
+    );
 
     axios.post("/admin/login", adminData).then((res) => {
       if (res.data.success) {
@@ -32,54 +36,25 @@ export default function Login(props) {
         );
         window.location = "/home";
       } else {
-        setAdminFormError(res.data.message);
-      }
-    });
-  };
-
-  const [employeeData, setEmployeeData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [employeeFormError, setEmployeeFormError] = useState("");
-
-  const loginEmployee = (e) => {
-    e.preventDefault();
-    console.log(
-      "sent data = " + employeeData.email + ".." + employeeData.password
-    );
-
-    axios.post("/employee/login", employeeData).then((res) => {
-      if (res.data.success) {
-        localStorage.setItem(
-          "tokenObject",
-          JSON.stringify(res.data.tokenObject)
-        );
-        window.location = "/home";
-      } else {
-        setAdminFormError(res.data.message);
+        setFormError(res.data.message);
       }
     });
   };
 
   return (
-    <div className="container-fluid ">
+    <div className="container-fluid login-body">
       <div className="row d-flex justify-content-center">
-        <div className="col-6 d-flex justify-content-center">
+        <div className="col-6 d-flex justify-content-center topic-col">
           <h1 className="topic">VEHICLE SERVICE CENTER</h1>
-          <br/>
-          <br/>
-          <br/>
         </div>
       </div>
       <div className="row d-flex justify-content-center">
         <div className="col-6 d-flex justify-content-center">
-          <div className="login-content">
-            <form action="" method="post" onSubmit={loginEmployee}>
-              <h3 className="title">Login as an employee</h3>
-              {employeeFormError && (
-                <p className="error"> {employeeFormError} </p>
+          <div className="login-content center">
+            <form action="" method="post" onSubmit={loginAdmin}>
+              <h3 className="title">Login as an admin</h3>
+              {formError && (
+                <p className="error"> {formError} </p>
               )}
 
               <div className="input-div one">
@@ -91,10 +66,10 @@ export default function Login(props) {
                   <input
                     required
                     type="email"
-                    value={employeeData.email}
+                    value={adminData.email}
                     onChange={(e) =>
-                      setEmployeeData({
-                        ...employeeData,
+                      setAdminData({
+                        ...adminData,
                         email: e.target.value,
                       })
                     }
@@ -112,10 +87,10 @@ export default function Login(props) {
                   <input
                     required
                     type="password"
-                    value={employeeData.password}
+                    value={adminData.password}
                     onChange={(e) =>
-                      setEmployeeData({
-                        ...employeeData,
+                      setAdminData({
+                        ...adminData,
                         password: e.target.value,
                       })
                     }
@@ -125,8 +100,8 @@ export default function Login(props) {
                 </div>
               </div>
 
-              <a href="#">Forgot Password?</a>
-              <input type="submit" className="btn" />
+              <a href="/admin_forgot_password">Forgot Password?</a>
+              <input type="submit" className="login_btn" />
             </form>
           </div>
         </div>
