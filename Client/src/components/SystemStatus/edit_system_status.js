@@ -87,7 +87,7 @@ export default function EditSystemStatus(props) {
 
           <div className="row">
             <div className="col">
-              <h2>SystemStatus Profile</h2>
+              <h2>System Status Profile</h2>
             </div>
           </div>
           <div className="row">

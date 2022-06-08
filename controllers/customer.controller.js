@@ -1,8 +1,9 @@
 const Customer = require("../models/customer.model");
 const Vehicle = require("../models/vehicle.model");
+const FCMToken = require("../models/fcm_toke.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
-const {customerForgotPasswordSender} = require("../util/emailService");
+const { customerForgotPasswordSender } = require("../util/emailService");
 
 exports.signUp = (req, res) => {
   Customer.getCustomerByEmail(req.body.email)
@@ -32,10 +33,13 @@ exports.signUp = (req, res) => {
           .create()
           .then(([result]) => {
             if (result.affectedRows === 1) {
-              const tokenObject = auth.issueJWT({
-                id: result.insertId,
-                ...newCustomer,
-              }, "CUSTOMER");
+              const tokenObject = auth.issueJWT(
+                {
+                  id: result.insertId,
+                  ...newCustomer,
+                },
+                "CUSTOMER"
+              );
               return res.status(200).json({
                 code: 200,
                 success: true,
@@ -70,7 +74,6 @@ exports.signUp = (req, res) => {
     });
 };
 
-
 exports.register = (req, res) => {
   if (parseInt(req.jwt.sub.id) !== parseInt(req.params.id)) {
     return res.status(200).json({
@@ -80,102 +83,119 @@ exports.register = (req, res) => {
     });
   }
   Customer.getCustomerById(req.params.id)
-  .then(([customer]) => {
-    let salt;
-    let hash;
-    if(req.body.password){
-      salt = crypto.randomBytes(32).toString("hex");
-      hash = crypto
-          .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
-          .toString("hex");
-    }
-    if (customer.length) {
-      if (customer[0].is_completed) {
-        return res.status(200).json({
-          code: 200,
-          success: false,
-          message: "This account already registered",
+    .then(([customer]) => {
+      if (customer.length) {
+        const updatedCustomer = new Customer({
+          first_name: req.body.first_name || customer[0].first_name,
+          last_name: req.body.last_name || customer[0].last_name,
+          hash: customer[0].hash,
+          salt: customer[0].salt,
+          contact_number: req.body.contact_number || customer[0].contact_number,
+          nic_number: req.body.nic_number || customer[0].nic_number,
+          is_completed: 1,
         });
-      }
-      const updatedCustomer = new Customer({
-        first_name: req.body.first_name || customer[0].first_name,
-        last_name: req.body.last_name || customer[0].last_name,
-        hash: hash || customer[0].hash,
-        salt: salt || customer[0].salt,
-        contact_number: req.body.contact_number || customer[0].contact_number,
-        nic_number: req.body.nic_number || customer[0].nic_number,
-        is_completed: 1
-      });
-      updatedCustomer
-        .update(req.params.id)
-        .then(([result]) => {
-          if (result.affectedRows === 1) {
+        updatedCustomer
+          .update(req.params.id)
+          .then(([result]) => {
+            if (result.affectedRows === 1) {
+              FCMToken.deleteByFCMToken(req.body.fcm_token)
+                .then(([deletedFCMToken]) => {
+                  console.log(" deletedFCMToken -> affectedRows = ", deletedFCMToken.affectedRows);
+                  const newFCMToken = new FCMToken({
+                    customer_id: req.params.id,
+                    fcm_token: req.body.fcm_token,
+                  });
 
-            const newVehicle = new Vehicle({
-              customer_id: req.params.id,
-              vehicle_type: req.body.vehicle_type,
-              vehicle_number: req.body.vehicle_number.toUpperCase(),
-            });
+                  newFCMToken
+                    .create()
+                    .then(([createdFCMToken]) => {
+                      console.log(" createdFCMToken -> affectedRows = ", createdFCMToken.affectedRows);
+                      const newVehicle = new Vehicle({
+                        customer_id: req.params.id,
+                        vehicle_type: req.body.vehicle_type,
+                        vehicle_number: req.body.vehicle_number.toUpperCase(),
+                      });
 
-            newVehicle
-            .create()
-            .then(([result2]) => {
-              if (result2.affectedRows === 1) {
-                const tokenObject = auth.issueJWT({id: req.params.id,...updatedCustomer}, "CUSTOMER");
-                return res.status(200).json({
-                  code: 200,
-                  success: true,
-                  tokenObject: tokenObject,
-                  message: "Successfully registered",
+                      newVehicle
+                        .create()
+                        .then(([createdVehicle]) => {
+                          if (createdVehicle.affectedRows === 1) {
+                            const tokenObject = auth.issueJWT(
+                              { id: req.params.id, ...updatedCustomer },
+                              "CUSTOMER"
+                            );
+                            return res.status(200).json({
+                              code: 200,
+                              success: true,
+                              tokenObject: tokenObject,
+                              message: "Successfully registered",
+                            });
+                          } else {
+                            return res.status(200).json({
+                              code: 200,
+                              success: false,
+                              message: "Please try again",
+                            });
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                          return res.status(200).json({
+                            code: 200,
+                            success: false,
+                            message: error.message,
+                          });
+                        });
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      return res.status(200).json({
+                        code: 200,
+                        success: false,
+                        message: error.message,
+                      });
+                    });
+                })
+                .catch((error) => {
+                  console.log(error);
+                  return res.status(200).json({
+                    code: 200,
+                    success: false,
+                    message: error.message,
+                  });
                 });
-              } else {
-                return res.status(200).json({
-                  code: 200,
-                  success: false,
-                  message: "Please try again",
-                });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
+            } else {
               return res.status(200).json({
                 code: 200,
                 success: false,
-                message: error.message,
+                message: "Please try again",
               });
-            });
-          } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
             return res.status(200).json({
               code: 200,
               success: false,
-              message: "Please try again",
+              message: error.message,
             });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: error.message,
           });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This customer not found",
         });
-    } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "This customer not found",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
 
 exports.login = async function (req, res) {
@@ -187,12 +207,43 @@ exports.login = async function (req, res) {
           .toString("hex");
 
         if (customer[0].hash === hashVerify) {
-          const tokenObject = auth.issueJWT(customer[0], "CUSTOMER");
+          FCMToken.deleteByFCMToken(req.body.fcm_token)
+          .then(([deletedFCMToken]) => {
+            console.log(" deletedFCMToken -> affectedRows = ", deletedFCMToken.affectedRows);
+            const newFCMToken = new FCMToken({
+              customer_id: customer[0].id,
+              fcm_token: req.body.fcm_token,
+            });
 
-          res.status(200).json({
-            code: 200,
-            success: true,
-            token: tokenObject,
+            newFCMToken
+              .create()
+              .then(([createdFCMToken]) => {
+                console.log(" createdFCMToken -> affectedRows = ", createdFCMToken.affectedRows);
+                const tokenObject = auth.issueJWT(customer[0], "CUSTOMER");
+
+                res.status(200).json({
+                  code: 200,
+                  success: true,
+                  token: tokenObject,
+                });
+
+              })
+              .catch((error) => {
+                console.log(error);
+                return res.status(200).json({
+                  code: 200,
+                  success: false,
+                  message: error.message,
+                });
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: error.message,
+            });
           });
         } else {
           res.status(200).json({
@@ -219,85 +270,84 @@ exports.login = async function (req, res) {
     });
 };
 
-
 exports.passwordReset = (req, res) => {
   Customer.getCustomerByEmail(req.body.email)
-  .then(([customer]) => {
-    var randomPassword = Math.random().toString(36).slice(-8);
-    let salt;
-    let hash;
-    if(randomPassword){
-      salt = crypto.randomBytes(32).toString("hex");
-      hash = crypto
+    .then(([customer]) => {
+      var randomPassword = Math.random().toString(36).slice(-8);
+      let salt;
+      let hash;
+      if (randomPassword) {
+        salt = crypto.randomBytes(32).toString("hex");
+        hash = crypto
           .pbkdf2Sync(randomPassword, salt, 10000, 64, "sha512")
           .toString("hex");
-    }
-    if (customer.length) {
-      const updatedCustomer = new Customer({
-        first_name: customer[0].first_name,
-        last_name: customer[0].last_name,
-        email: req.body.email,
-        hash: hash,
-        salt: salt,
-        contact_number: customer[0].contact_number,
-        nic_number: customer[0].nic_number,
-        is_completed: 1
-      });
-      updatedCustomer
-        .update(customer[0].id)
-        .then(([result]) => {
-          if (result.affectedRows === 1) {
-            customerForgotPasswordSender(updatedCustomer,randomPassword);
-            return res.status(200).json({
-              code: 200,
-              success: true,
-              message: "Please check your email.",
-            });
-          } else {
+      }
+      if (customer.length) {
+        const updatedCustomer = new Customer({
+          first_name: customer[0].first_name,
+          last_name: customer[0].last_name,
+          email: req.body.email,
+          hash: hash,
+          salt: salt,
+          contact_number: customer[0].contact_number,
+          nic_number: customer[0].nic_number,
+          is_completed: 1,
+        });
+        updatedCustomer
+          .update(customer[0].id)
+          .then(([result]) => {
+            if (result.affectedRows === 1) {
+              customerForgotPasswordSender(updatedCustomer, randomPassword);
+              return res.status(200).json({
+                code: 200,
+                success: true,
+                message: "Please check your email.",
+              });
+            } else {
+              return res.status(200).json({
+                code: 200,
+                success: false,
+                message: "Please try again",
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
             return res.status(200).json({
               code: 200,
               success: false,
-              message: "Please try again",
+              message: error.message,
             });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: error.message,
           });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This customer not found",
         });
-    } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "This customer not found",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
 
 exports.getAllCustomers = (req, res, next) => {
   Customer.getAllCustomers()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -319,14 +369,14 @@ exports.getAllCustomers = (req, res, next) => {
 exports.getCustomerById = (req, res) => {
   Customer.getCustomerById(req.params.id)
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -354,66 +404,66 @@ exports.update = (req, res) => {
     });
   }
   Customer.getCustomerById(req.params.id)
-  .then(([customer]) => {
-    let salt;
-    let hash;
-    if(req.body.password){
-      salt = crypto.randomBytes(32).toString("hex");
-      hash = crypto
+    .then(([customer]) => {
+      let salt;
+      let hash;
+      if (req.body.password) {
+        salt = crypto.randomBytes(32).toString("hex");
+        hash = crypto
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
           .toString("hex");
-    }
-    if (customer.length) {
-      const updatedCustomer = new Customer({
-        first_name: req.body.first_name || customer[0].first_name,
-        last_name: req.body.last_name || customer[0].last_name,
-        hash: hash || customer[0].hash,
-        salt: salt || customer[0].salt,
-        contact_number: req.body.contact_number || customer[0].contact_number,
-        nic_number: req.body.nic_number || customer[0].nic_number,
-        is_completed: 1
-      });
-      updatedCustomer
-        .update(req.params.id)
-        .then(([result]) => {
-          if (result.affectedRows === 1) {
-            return res.status(200).json({
-              code: 200,
-              success: true,
-              message: "Successfully updated",
-            });
-          } else {
+      }
+      if (customer.length) {
+        const updatedCustomer = new Customer({
+          first_name: req.body.first_name || customer[0].first_name,
+          last_name: req.body.last_name || customer[0].last_name,
+          hash: hash || customer[0].hash,
+          salt: salt || customer[0].salt,
+          contact_number: req.body.contact_number || customer[0].contact_number,
+          nic_number: req.body.nic_number || customer[0].nic_number,
+          is_completed: 1,
+        });
+        updatedCustomer
+          .update(req.params.id)
+          .then(([result]) => {
+            if (result.affectedRows === 1) {
+              return res.status(200).json({
+                code: 200,
+                success: true,
+                message: "Successfully updated",
+              });
+            } else {
+              return res.status(200).json({
+                code: 200,
+                success: false,
+                message: "Please try again",
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
             return res.status(200).json({
               code: 200,
               success: false,
-              message: "Please try again",
+              message: error.message,
             });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: error.message,
           });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This customer not found",
         });
-    } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "This customer not found",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
 
 exports.delete = (req, res) => {

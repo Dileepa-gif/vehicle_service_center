@@ -1,18 +1,19 @@
 const Service = require("../models/service.model");
 const TimeSlot = require("../models/time_slot.model");
-
+const FCMToken = require("../models/fcm_toke.model");
+const { serviceDoneNotification } = require("../util/notification");
 
 exports.getAllServices = (req, res) => {
   Service.getAllServices()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -34,14 +35,14 @@ exports.getAllServices = (req, res) => {
 exports.getActiveServices = (req, res) => {
   Service.getActiveServices()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -59,19 +60,18 @@ exports.getActiveServices = (req, res) => {
       });
     });
 };
-
 
 exports.getHistory = (req, res) => {
   Service.getHistory()
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -89,7 +89,6 @@ exports.getHistory = (req, res) => {
       });
     });
 };
-
 
 exports.getServicesRelevantToToday = (req, res) => {
   var dateTime = require("node-datetime");
@@ -99,25 +98,25 @@ exports.getServicesRelevantToToday = (req, res) => {
     .then(([rows]) => {
       if (rows.length) {
         Service.getSummaryOfToday(today)
-        .then(([summary]) => {
-          return res.status(200).json({
-            code: 200,
-            success: true,
-            data: rows,
-            number_of_services: summary[0].number_of_services || 0,
-            total_price: summary[0].total_price || 0,
-            discounted_amount: summary[0].discounted_amount || 0,
-            message: "Data received",
+          .then(([summary]) => {
+            return res.status(200).json({
+              code: 200,
+              success: true,
+              data: rows,
+              number_of_services: summary[0].number_of_services || 0,
+              total_price: summary[0].total_price || 0,
+              discounted_amount: summary[0].discounted_amount || 0,
+              message: "Data received",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: error.message,
+            });
           });
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: error.message,
-          });
-        });
       } else {
         return res.status(200).json({
           code: 200,
@@ -140,14 +139,14 @@ exports.getServicesRelevantToToday = (req, res) => {
 exports.getServiceById = (req, res) => {
   Service.getServiceById(req.params.id)
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
@@ -166,126 +165,153 @@ exports.getServiceById = (req, res) => {
     });
 };
 
-
 exports.done = (req, res) => {
-  Service.done(req.params.id, req.body.discount).then(([result]) => {
-    if (result.affectedRows === 1) {    
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: "Successfully updated",
-      });
-    } else {
+  Service.done(req.params.id, req.body.discount)
+    .then(([result]) => {
+      if (result.affectedRows === 1) {
+        Service.getServiceById(req.params.id)
+          .then(([service]) => {
+
+            FCMToken.getFCMTokensByCustomerId(service[0].customer_id)
+              .then(([fcm_token_arr]) => {
+                if (fcm_token_arr.length) {
+                  serviceDoneNotification(service[0].id, service[0].vehicle_number,fcm_token_arr);
+                }
+                return res.status(200).json({
+                  code: 200,
+                  success: true,
+                  message: "Successfully updated",
+                });
+              })
+              .catch((error) => {
+                console.log(error);
+                return res.status(200).json({
+                  code: 200,
+                  success: false,
+                  message: error.message,
+                });
+              });
+
+
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(200).json({
+              code: 200,
+              success: false,
+              message: error.message,
+            });
+          });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "Please try again",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "Please try again",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
 
 exports.cashPaymentMethod = (req, res) => {
-  Service.cashPaymentMethod(req.params.id).then(([result]) => {
-    if (result.affectedRows === 1) {    
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: "Successfully updated",
-      });
-    } else {
+  Service.cashPaymentMethod(req.params.id)
+    .then(([result]) => {
+      if (result.affectedRows === 1) {
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          message: "Successfully updated",
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "Please try again",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "Please try again",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
-
-
-
 
 exports.pay = (req, res) => {
-  Service.pay(req.params.id, req.body.price, req.body.payment_method).then(([result]) => {
-    if (result.affectedRows === 1) {    
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: "Successfully paid",
-      });
-    } else {
+  Service.pay(req.params.id, req.body.price, req.body.payment_method)
+    .then(([result]) => {
+      if (result.affectedRows === 1) {
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          message: "Successfully paid",
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "Please try again",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "Please try again",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
 
-
 exports.addRating = (req, res) => {
-  Service.addRating(req.params.id, req.body.rating).then(([result]) => {
-    if (result.affectedRows === 1) {    
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: "Successfully updated",
-      });
-    } else {
+  Service.addRating(req.params.id, req.body.rating)
+    .then(([result]) => {
+      if (result.affectedRows === 1) {
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          message: "Successfully updated",
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "Please try again",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
       return res.status(200).json({
         code: 200,
         success: false,
-        message: "Please try again",
+        message: error.message,
       });
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    return res.status(200).json({
-      code: 200,
-      success: false,
-      message: error.message,
     });
-  });
 };
 
 exports.getHistoryByVehicleId = (req, res) => {
   Service.getHistoryByVehicleId(req.params.id)
     .then(([rows]) => {
-      if(rows.length){
+      if (rows.length) {
         return res.status(200).json({
           code: 200,
           success: true,
           data: rows,
           message: "Data received",
         });
-      }else{
+      } else {
         return res.status(200).json({
           code: 200,
           success: false,
