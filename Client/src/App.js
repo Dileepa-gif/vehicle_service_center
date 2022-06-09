@@ -53,6 +53,9 @@ import ServicesRelevantToToday from "./components/Summary/services_relevant_to_t
 import AdminForgotPassword from "./components/ForgotPassword/admin_forgot_password";
 import EmployeeForgotPassword from "./components/ForgotPassword/employee_forgot_password";
 
+import AddCarouselImage from "./components/Carousel/add_carousel_image";
+import CarouselImageList from "./components/Carousel/carousel_image_list";
+
 
 
 function App() {
@@ -105,6 +108,9 @@ function App() {
 
               <Route path="/admin_forgot_password" component={AdminForgotPassword} />
               <Route path="/employee_forgot_password" component={EmployeeForgotPassword} />
+
+              <Route path="/add_carousel_image" component={AddCarouselImage} />
+              <Route path="/carousel_image_list" component={CarouselImageList} />
 
             </Switch>
         </Router>

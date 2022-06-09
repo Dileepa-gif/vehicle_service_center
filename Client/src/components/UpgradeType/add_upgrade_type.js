@@ -151,7 +151,7 @@ export default function UpgradeTypeList(props) {
                 </div>
 
                 <button type="submit" className="btn btn-primary mr-2">
-                  Update
+                  Create
                 </button>
               </form>
             </div>

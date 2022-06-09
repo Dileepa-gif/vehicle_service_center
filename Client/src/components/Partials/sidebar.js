@@ -150,14 +150,40 @@ export default function Sidebar(props) {
           </a>
           <ul className="collapse list-unstyled" id="summary">
             <li>
-              <a href="/appointments_relevant_to_today">Appointments relevant to today</a>
+              <a href="/appointments_relevant_to_today">
+                Appointments relevant to today
+              </a>
             </li>
             <li>
-              <a href="/services_relevant_to_today">Services relevant to today</a>
+              <a href="/services_relevant_to_today">
+                Services relevant to today
+              </a>
             </li>
           </ul>
-        </li> 
+        </li>
 
+        
+          <li>
+            <a
+              href="#carousel"
+              data-toggle="collapse"
+              aria-expanded="false"
+              className="dropdown-toggle"
+            >
+              Carousel
+            </a>
+            <ul className="collapse list-unstyled" id="carousel">
+              <li>
+                <a href="/carousel_image_list">Carousel Image List</a>
+              </li>
+              {user && user.sub.status === "ADMIN" && (
+              <li>
+                <a href="/add_carousel_image">Add Carousel Image</a>
+              </li>
+              )}
+            </ul>
+          </li>
+        
       </ul>
 
       <ul className="list-unstyled CTAs">
