@@ -364,7 +364,7 @@ export default function EditService(props) {
                   <div className="form-group">
                     <label htmlFor="price">Amount To Be Paid</label>
                     <input
-                      type="text"
+                      type="number"
                       name="price"
                       className="form-control"
                       id="price"

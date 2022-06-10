@@ -114,31 +114,6 @@ export default function EditAppointment(props) {
       });
   };
 
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
-  //   const id = props.match.params.id;
-  //   axios
-  //     .put(`appointment/update/${id}`, appointmentData, {
-  //       headers: {
-  //         Authorization: user.token,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         setMessage({
-  //           status: true,
-  //           success: true,
-  //           message: res.data.message,
-  //         });
-  //       } else {
-  //         setMessage({
-  //           status: true,
-  //           success: false,
-  //           message: res.data.message,
-  //         });
-  //       }
-  //     });
-  // };
 
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">

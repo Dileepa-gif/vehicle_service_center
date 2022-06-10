@@ -43,29 +43,7 @@ export default function ServiceList(props) {
     }
   }, []);
 
-  // const deleteService = (id) => {
-  //   axios
-  //     .delete(`service/delete/${id}`, {
-  //       headers: {
-  //         Authorization: user.token,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         window.location.reload(false);
-  //       } else {
-  //         setMessage({
-  //           status: true,
-  //           success: false,
-  //           message: res.data.message,
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log("error = " + error);
-  //       window.location = "/all_service_list";
-  //     });
-  // };
+
 
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">

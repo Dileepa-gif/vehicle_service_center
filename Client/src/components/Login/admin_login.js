@@ -64,7 +64,6 @@ export default function Login(props) {
                 </div>
                 <div className="div">
                   <input
-                    required
                     type="email"
                     value={adminData.email}
                     onChange={(e) =>
@@ -73,6 +72,8 @@ export default function Login(props) {
                         email: e.target.value,
                       })
                     }
+                    required
+                    maxlength="250"
                   />
                   <label>Email</label>
                 </div>
@@ -85,7 +86,6 @@ export default function Login(props) {
                 </div>
                 <div className="div">
                   <input
-                    required
                     type="password"
                     value={adminData.password}
                     onChange={(e) =>
@@ -94,6 +94,9 @@ export default function Login(props) {
                         password: e.target.value,
                       })
                     }
+                    required
+                    minlength="8"
+                    maxlength="25"
                   />
 
                   <label>Password</label>
