@@ -3,7 +3,78 @@ const Vehicle = require("../models/vehicle.model");
 const FCMToken = require("../models/fcm_toke.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
 const { customerForgotPasswordSender } = require("../util/emailService");
+
+
+const customerSingUpValidation = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().required().max(250).email(),
+    password: Joi.string().required().min(8).max(25)
+  });
+  return schema.validate(data);
+};
+
+const customerRegisterValidation = (data) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required().min(2).max(250),
+    last_name: Joi.string().required().min(2).max(250),
+    contact_number: Joi.string()
+      .required()
+      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+      .min(10)
+      .max(12)
+      .message("Phone number should be corrected"),
+    nic_number: Joi.string().required().min(10).max(12),
+  });
+  return schema.validate(data);
+};
+
+const customerUpdateValidation1 = (data) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required().min(2).max(250),
+    last_name: Joi.string().required().min(2).max(250),
+    email: Joi.string().required().max(250).email(),
+    contact_number: Joi.string()
+      .required()
+      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+      .min(10)
+      .max(12)
+      .message("Phone number should be corrected"),
+    nic_number: Joi.string().required().min(10).max(12),
+  });
+  return schema.validate(data);
+};
+
+const customerUpdateValidation2 = (data) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required().min(2).max(250),
+    last_name: Joi.string().required().min(2).max(250),
+    email: Joi.string().required().max(250).email(),
+    password: Joi.string().required().min(8).max(25),
+    contact_number: Joi.string()
+      .required()
+      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+      .min(10)
+      .max(12)
+      .message("Phone number should be corrected"),
+    nic_number: Joi.string().required().min(10).max(12),
+  });
+  return schema.validate(data);
+};
+
+
+const vehicleValidation = (data) => {
+  const schema = Joi.object({
+    vehicle_type: Joi.string().required().min(2).max(250),
+    vehicle_number: Joi.string().required().min(4).max(8)
+  });
+  return schema.validate(data);
+};
+
+
 
 exports.signUp = (req, res) => {
   Customer.getCustomerByEmail(req.body.email)
@@ -15,6 +86,13 @@ exports.signUp = (req, res) => {
           message: "This email already registered",
         });
       } else {
+        const { error } = customerSingUpValidation(req.body);
+        if (error)
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.details[0].message,
+          });
         const salt = crypto.randomBytes(32).toString("hex");
         const hash = crypto
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
@@ -85,6 +163,16 @@ exports.register = (req, res) => {
   Customer.getCustomerById(req.params.id)
     .then(([customer]) => {
       if (customer.length) {
+
+        const { error } = customerRegisterValidation(req.body);
+        if (error)
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.details[0].message,
+          });
+
+
         const updatedCustomer = new Customer({
           first_name: req.body.first_name || customer[0].first_name,
           last_name: req.body.last_name || customer[0].last_name,
@@ -110,6 +198,13 @@ exports.register = (req, res) => {
                     .create()
                     .then(([createdFCMToken]) => {
                       console.log(" createdFCMToken -> affectedRows = ", createdFCMToken.affectedRows);
+                      const { error } = vehicleValidation(req.body);
+                      if (error)
+                        return res.status(200).json({
+                          code: 200,
+                          success: false,
+                          message: error.details[0].message,
+                        });
                       const newVehicle = new Vehicle({
                         customer_id: req.params.id,
                         vehicle_type: req.body.vehicle_type,
@@ -403,11 +498,28 @@ exports.update = (req, res) => {
       message: "You are not the owner of this account",
     });
   }
+
+  const { error } = customerUpdateValidation1(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
   Customer.getCustomerById(req.params.id)
     .then(([customer]) => {
       let salt;
       let hash;
       if (req.body.password) {
+
+        const { error } = customerUpdateValidation2(req.body);
+        if (error)
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.details[0].message,
+          });
+
         salt = crypto.randomBytes(32).toString("hex");
         hash = crypto
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")

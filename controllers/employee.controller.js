@@ -1,7 +1,47 @@
 const Employee = require("../models/employee.model");
 const crypto = require("crypto");
 const auth = require("../util/auth");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
 const { employeePasswordSender, employeeForgotPasswordSender } = require("../util/emailService");
+
+
+
+const employeeRegisterValidation = (data) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required().min(2).max(250),
+    last_name: Joi.string().required().min(2).max(250),
+    email: Joi.string().required().max(250).email(),
+    password: Joi.string().required().min(8).max(25),
+    nic_number: Joi.string().required().min(10).max(12),
+    phone_number: Joi.string()
+      .required()
+      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+      .min(10)
+      .max(12)
+      .message("Phone number should be corrected"),
+    address: Joi.string().required().min(2).max(250),
+  });
+  return schema.validate(data);
+};
+
+const employeeUpdateValidation = (data) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required().min(2).max(250),
+    last_name: Joi.string().required().min(2).max(250),
+    email: Joi.string().required().max(250).email(),
+    nic_number: Joi.string().required().min(10).max(12),
+    phone_number: Joi.string()
+      .required()
+      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+      .min(10)
+      .max(12)
+      .message("Phone number should be corrected"),
+    address: Joi.string().required().min(2).max(250),
+  });
+  return schema.validate(data);
+};
 
 exports.register = (req, res) => {
   Employee.getEmployeeByEmail(req.body.email)
@@ -13,6 +53,13 @@ exports.register = (req, res) => {
           message: "This email already registered",
         });
       } else {
+        const { error } = employeeRegisterValidation(req.body);
+        if (error)
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.details[0].message,
+          });
         var randomPassword = Math.random().toString(36).slice(-8);
         const salt = crypto.randomBytes(32).toString("hex");
         const hash = crypto
@@ -242,11 +289,27 @@ exports.update = (req, res) => {
       message: "You are not the owner of this account",
     });
   }
+
+  const { error } = employeeUpdateValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   Employee.getEmployeeById(req.params.id)
     .then(([employee]) => {
       let salt;
       let hash;
       if (req.body.password) {
+        const { error } = employeeRegisterValidation(req.body);
+        if (error)
+          return res.status(200).json({
+            code: 200,
+            success: false,
+            message: error.details[0].message,
+          });
         salt = crypto.randomBytes(32).toString("hex");
         hash = crypto
           .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")

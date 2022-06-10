@@ -1,4 +1,14 @@
 const SystemStatus = require("../models/system_status.model");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
+
+const systemStatusValidation = (data) => {
+  const schema = Joi.object({
+    is_active: Joi.number().required()
+  });
+  return schema.validate(data);
+};
 
 exports.getSystemStatus = (req, res) => {
   SystemStatus.getSystemStatus()
@@ -30,6 +40,15 @@ exports.getSystemStatus = (req, res) => {
 };
 
 exports.update = (req, res) => {
+
+  const { error } = systemStatusValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+    
   const updatedSystemStatus = new SystemStatus({
     id: 1,
     is_active: req.body.is_active,
