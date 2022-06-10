@@ -6,7 +6,7 @@ const Joi = JoiBase.extend(JoiDate);
 const upgradeTypeValidation = (data) => {
   const schema = Joi.object({
     name: Joi.string().required().min(2).max(250),
-    vehicle_number: Joi.string().required().min(4).max(250),
+    description: Joi.string().required().max(250),
     price: Joi.number().required()
   });
   return schema.validate(data);

@@ -110,6 +110,8 @@ export default function UpgradeTypeList(props) {
                     }
                     placeholder="Name"
                     required
+                    minlength="2"
+                    maxlength="250"
                   />
                 </div>
                 <div className="form-group">
@@ -128,13 +130,14 @@ export default function UpgradeTypeList(props) {
                     }
                     placeholder="Description"
                     required
+                    maxlength="250"
                   />
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="price">Price</label>
                   <input
-                    type="text"
+                    type="number"
                     name="price"
                     className="form-control"
                     id="price"

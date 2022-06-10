@@ -129,7 +129,7 @@ export default function EditTimeSlot(props) {
                 <div className="form-group">
                   <label htmlFor="number_of_vehicles">Number Of Vehicles</label>
                   <input
-                    type="text"
+                    type="number"
                     name="number_of_vehicles"
                     className="form-control"
                     id="number_of_vehicles"

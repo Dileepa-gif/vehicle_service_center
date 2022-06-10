@@ -155,7 +155,7 @@ export default function EditUpgradeType(props) {
                 <div className="form-group">
                   <label htmlFor="price">Price</label>
                   <input
-                    type="text"
+                    type="number"
                     name="price"
                     className="form-control"
                     id="price"

@@ -118,6 +118,8 @@ export default function AdminList(props) {
                         }
                         placeholder="First name"
                         required
+                        minlength="2"
+                        maxlength="250"
                       />
                     </div>
                   </div>
@@ -138,6 +140,8 @@ export default function AdminList(props) {
                         }
                         placeholder="Last name"
                         required
+                        minlength="2"
+                        maxlength="250"
                       />
                     </div>
                   </div>
@@ -160,6 +164,7 @@ export default function AdminList(props) {
                     }
                     placeholder="Email"
                     required
+                    maxlength="250"
                   />
                 </div>
 
@@ -179,6 +184,8 @@ export default function AdminList(props) {
                     }
                     placeholder="NIC"
                     required
+                    minlength="10"
+                    maxlength="12"
                   />
                 </div>
 
@@ -198,6 +205,8 @@ export default function AdminList(props) {
                     }
                     placeholder="Phone Number"
                     required
+                    minlength="10"
+                    maxlength="12"
                   />
                 </div>
 
@@ -217,6 +226,8 @@ export default function AdminList(props) {
                     }
                     placeholder="Address"
                     required
+                    minlength="2"
+                    maxlength="250"
                   />
                 </div>
 
