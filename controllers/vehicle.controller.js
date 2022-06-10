@@ -1,6 +1,26 @@
 const Vehicle = require("../models/vehicle.model");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
+
+const vehicleValidation = (data) => {
+  const schema = Joi.object({
+    vehicle_type: Joi.string().required().min(2).max(250),
+    vehicle_number: Joi.string().required().min(4).max(8)
+  });
+  return schema.validate(data);
+};
 
 exports.create = (req, res) => {
+
+  const { error } = vehicleValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   const newVehicle = new Vehicle({
     customer_id: req.jwt.sub.id,
     vehicle_type: req.body.vehicle_type,
@@ -154,6 +174,14 @@ exports.getNotAdvertisedVehiclesByCustomerId = (req, res) => {
 };
 
 exports.update = (req, res) => {
+
+  const { error } = vehicleValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
 
   const updatedVehicle = new Vehicle({
     customer_id: req.jwt.sub.id,

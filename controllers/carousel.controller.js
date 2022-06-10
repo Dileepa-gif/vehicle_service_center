@@ -1,6 +1,25 @@
 const Carousel = require("../models/carousel.model");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
+
+const carouselValidation = (data) => {
+  const schema = Joi.object({
+    image: Joi.string().required()
+  });
+  return schema.validate(data);
+};
 
 exports.create = (req, res) => {
+
+  const { error } = carouselValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   const newCarousel = new Carousel({
     image: req.body.image
   });
@@ -91,6 +110,14 @@ exports.getCarouselById = (req, res) => {
 };
 
 exports.update = (req, res) => {
+
+  const { error } = carouselValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
 
   const updatedCarousel = new Carousel({
     image: req.body.image

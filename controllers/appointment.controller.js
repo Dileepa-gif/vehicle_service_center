@@ -1,6 +1,20 @@
 const Appointment = require("../models/appointment.model");
 const TimeSlot = require("../models/time_slot.model");
 const Service = require("../models/service.model");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
+
+const appointmentValidation = (data) => {
+  const schema = Joi.object({
+    date: Joi.date().format("YYYY-MM-DD").required(),
+    vehicle_id: Joi.number().required(),
+    customer_id: Joi.number().required(),
+    time_slot_id: Joi.number().required(),
+    upgrade_type_id: Joi.number().required(),
+  });
+  return schema.validate(data);
+};
 
 exports.create = (req, res) => {
   let number_of_vehicles = 0;
@@ -16,6 +30,15 @@ exports.create = (req, res) => {
           .then(([appointments]) => {
             console.log(appointments);
             if (appointments[0].count < number_of_vehicles) {
+
+              const { error } = appointmentValidation(req.body);
+              if (error)
+                return res.status(200).json({
+                  code: 200,
+                  success: false,
+                  message: error.details[0].message,
+                });
+              
               const newAppointment = new Appointment({
                 status: "Reserved",
                 date: req.body.date,
@@ -24,7 +47,6 @@ exports.create = (req, res) => {
                 time_slot_id: req.body.time_slot_id,
                 upgrade_type_id: req.body.upgrade_type_id,
               });
-              console.log("00 = ", newAppointment);
               newAppointment
                 .create()
                 .then(([result]) => {
@@ -240,6 +262,15 @@ exports.update = (req, res) => {
         )
           .then(([appointments]) => {
             if (appointments[0].count < number_of_vehicles) {
+
+              const { error } = appointmentValidation(req.body);
+              if (error)
+                return res.status(200).json({
+                  code: 200,
+                  success: false,
+                  message: error.details[0].message,
+                });
+
               const updatedAppointment = new Appointment({
                 status: "Reserved",
                 date: req.body.date,

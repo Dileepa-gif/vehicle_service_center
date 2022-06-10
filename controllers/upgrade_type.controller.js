@@ -1,6 +1,27 @@
 const UpgradeType = require("../models/upgrade_type.model");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
+
+const upgradeTypeValidation = (data) => {
+  const schema = Joi.object({
+    name: Joi.string().required().min(2).max(250),
+    vehicle_number: Joi.string().required().min(4).max(250),
+    price: Joi.number().required()
+  });
+  return schema.validate(data);
+};
 
 exports.create = (req, res) => {
+
+  const { error } = upgradeTypeValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   const newUpgradeType = new UpgradeType({
     name: req.body.name,
     description: req.body.description,
@@ -93,6 +114,14 @@ exports.getUpgradeTypeById = (req, res) => {
 };
 
 exports.update = (req, res) => {
+
+  const { error } = upgradeTypeValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
 
   const updatedUpgradeType = new UpgradeType({
     name: req.body.name,

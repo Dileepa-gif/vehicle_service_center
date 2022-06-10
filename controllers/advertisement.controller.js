@@ -1,6 +1,34 @@
 const Advertisement = require("../models/advertisement.model");
 const AdvertisementImage = require("../models/advertisement_image.model");
 
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
+
+const advertisementValidation = (data) => {
+  const schema = Joi.object({
+    vehicle_id: Joi.number().required(),
+    brand: Joi.string().required().min(2).max(250),
+    model: Joi.string().required().min(2).max(250),
+    manufactured_year: Joi.string().required().min(2).max(250),
+    vehicle_condition: Joi.string().required().min(2).max(250),
+    transmission: Joi.string().required().min(2).max(250),
+    fuel_type: Joi.string().required().min(2).max(250),
+    engine_capacity: Joi.string().required().min(2).max(250),
+    mileage: Joi.string().required().min(2).max(250),
+    seller_name: Joi.string().required().min(2).max(250),
+    city: Joi.string().required().min(2).max(250),
+    price: Joi.number().required(),
+    contact_number: Joi.string()
+    .required()
+    .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+    .min(10)
+    .max(12)
+    .message("Phone number should be corrected")
+  });
+  return schema.validate(data);
+};
+
 exports.create = (req, res) => {
   let image_arr = req.body.image_arr;
   if(image_arr.length >= 1){

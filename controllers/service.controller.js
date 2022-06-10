@@ -1,7 +1,32 @@
 const Service = require("../models/service.model");
-const TimeSlot = require("../models/time_slot.model");
 const FCMToken = require("../models/fcm_toke.model");
+const JoiBase = require("@hapi/joi");
+const JoiDate = require("@hapi/joi-date");
+const Joi = JoiBase.extend(JoiDate);
 const { serviceDoneNotification } = require("../util/notification");
+
+
+const serviceDoneValidation = (data) => {
+  const schema = Joi.object({
+    discount: Joi.number().required()
+  });
+  return schema.validate(data);
+};
+
+const servicePayValidation = (data) => {
+  const schema = Joi.object({
+    price: Joi.number().required(),
+    payment_method: Joi.string().required()
+  });
+  return schema.validate(data);
+};
+
+const serviceAddRatingValidation = (data) => {
+  const schema = Joi.object({
+    rating: Joi.number().required()
+  });
+  return schema.validate(data);
+};
 
 exports.getAllServices = (req, res) => {
   Service.getAllServices()
@@ -166,6 +191,15 @@ exports.getServiceById = (req, res) => {
 };
 
 exports.done = (req, res) => {
+
+  const { error } = serviceDoneValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   Service.done(req.params.id, req.body.discount)
     .then(([result]) => {
       if (result.affectedRows === 1) {
@@ -248,6 +282,15 @@ exports.cashPaymentMethod = (req, res) => {
 };
 
 exports.pay = (req, res) => {
+
+  const { error } = servicePayValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   Service.pay(req.params.id, req.body.price, req.body.payment_method)
     .then(([result]) => {
       if (result.affectedRows === 1) {
@@ -275,6 +318,15 @@ exports.pay = (req, res) => {
 };
 
 exports.addRating = (req, res) => {
+
+  const { error } = serviceAddRatingValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
+
   Service.addRating(req.params.id, req.body.rating)
     .then(([result]) => {
       if (result.affectedRows === 1) {
