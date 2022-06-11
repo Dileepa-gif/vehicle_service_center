@@ -209,7 +209,7 @@ exports.done = (req, res) => {
             FCMToken.getFCMTokensByCustomerId(service[0].customer_id)
               .then(([fcm_token_arr]) => {
                 if (fcm_token_arr.length) {
-                  serviceDoneNotification(service[0].id, service[0].vehicle_number,fcm_token_arr);
+                  serviceDoneNotification(service[0],fcm_token_arr);
                 }
                 return res.status(200).json({
                   code: 200,
