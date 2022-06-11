@@ -43,6 +43,10 @@ export default function EditService(props) {
     employee_address: "",
   });
 
+  const [discountData, setDiscountData] = useState({
+    discount: 0
+  });
+
   const [message, setMessage] = useState({
     status: false,
     success: "",
@@ -98,6 +102,9 @@ export default function EditService(props) {
               employee_phone_number: res.data.data[0].employee_phone_number,
               employee_address: res.data.data[0].employee_address,
             });
+            setDiscountData({
+              discount: res.data.data[0].discount
+            });
           } else {
             setMessage({
               status: true,
@@ -119,7 +126,7 @@ export default function EditService(props) {
     e.preventDefault();
     const id = props.match.params.id;
     axios
-      .put(`service/done/${id}`, serviceData, {
+      .put(`service/done/${id}`, discountData, {
         headers: {
           Authorization: user.token,
         },
@@ -318,11 +325,17 @@ export default function EditService(props) {
                       name="discount"
                       placeholder="Select Status"
                       value={serviceData.discount}
-                      onChange={(e) =>
+                      onChange={(e) =>{
                         setServiceData({
                           ...serviceData,
                           discount: e.target.value,
+                        });
+                        setDiscountData({
+                          ...discountData,
+                          discount: e.target.value,
                         })
+                      }
+
                       }
                     >
                       <option value="0">0%</option>

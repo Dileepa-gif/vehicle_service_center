@@ -127,27 +127,6 @@ export default function EditService(props) {
     }
   }, []);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const id = props.match.params.id;
-    axios
-      .put(`service/pay/${id}`, paymentData, {
-        headers: {
-          Authorization: user.token,
-        },
-      })
-      .then((res) => {
-        if (res.data.success) {
-          window.location = `/bill/${props.match.params.id}`;
-        } else {
-          setMessage({
-            status: true,
-            success: false,
-            message: res.data.message,
-          });
-        }
-      });
-  };
 
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
