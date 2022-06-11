@@ -27,6 +27,11 @@ module.exports = class Admin {
         return db.execute(query);
     }
 
+    static checkEmailForUpdating(id, email) {
+        const query = `SELECT * FROM admin WHERE email = '${email}' AND NOT id = '${id}'`;
+        return db.execute(query);
+    }
+
     static delete(id) {
         const query = `DELETE FROM admin WHERE id = '${id}'`;
         return db.execute(query);

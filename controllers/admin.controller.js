@@ -4,21 +4,28 @@ const auth = require("../util/auth");
 const JoiBase = require("@hapi/joi");
 const JoiDate = require("@hapi/joi-date");
 const Joi = JoiBase.extend(JoiDate);
-const { adminPasswordSender, adminForgotPasswordSender,} = require("../util/emailService");
+const {
+  adminPasswordSender,
+  adminForgotPasswordSender,
+} = require("../util/emailService");
 
 const adminRegisterValidation = (data) => {
   const schema = Joi.object({
+    id: Joi.number().allow(null, ""),
     first_name: Joi.string().required().min(2).max(250),
     last_name: Joi.string().required().min(2).max(250),
     email: Joi.string().required().max(250).email(),
-    password: Joi.string().required().min(8).max(25),
     nic_number: Joi.string().required().min(10).max(12),
     phone_number: Joi.string()
       .required()
       .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
       .min(10)
       .max(12)
-      .message("Phone number should be corrected"),
+      .messages({
+        "string.min": "Must have at least 10 characters",
+        "object.regex": "Must have at least 12 characters",
+        "string.pattern.base": "Phone number should be corrected",
+      }),
     address: Joi.string().required().min(2).max(250),
   });
   return schema.validate(data);
@@ -26,16 +33,22 @@ const adminRegisterValidation = (data) => {
 
 const adminUpdateValidation = (data) => {
   const schema = Joi.object({
+    id: Joi.number().allow(null, ""),
     first_name: Joi.string().required().min(2).max(250),
     last_name: Joi.string().required().min(2).max(250),
     email: Joi.string().required().max(250).email(),
+    password: Joi.string().allow(null, "").min(8).max(25),
     nic_number: Joi.string().required().min(10).max(12),
     phone_number: Joi.string()
       .required()
       .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
       .min(10)
       .max(12)
-      .message("Phone number should be corrected"),
+      .messages({
+        "string.min": "Must have at least 10 characters",
+        "object.regex": "Must have at least 12 characters",
+        "string.pattern.base": "Phone number should be corrected",
+      }),
     address: Joi.string().required().min(2).max(250),
   });
   return schema.validate(data);
@@ -294,48 +307,66 @@ exports.update = (req, res) => {
       message: error.details[0].message,
     });
 
-  Admin.getAdminById(req.params.id)
-    .then(([admin]) => {
-      let salt;
-      let hash;
-      if (req.body.password) {
-        const { error } = adminRegisterValidation(req.body);
-        if (error)
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: error.details[0].message,
-          });
-        salt = crypto.randomBytes(32).toString("hex");
-        hash = crypto
-          .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
-          .toString("hex");
-      }
-      if (admin.length) {
-        const updatedAdmin = new Admin({
-          first_name: req.body.first_name || admin[0].first_name,
-          last_name: req.body.last_name || admin[0].last_name,
-          email: req.body.email || admin[0].email,
-          hash: hash || admin[0].hash,
-          salt: salt || admin[0].salt,
-          nic_number: req.body.nic_number || admin[0].nic_number,
-          phone_number: req.body.phone_number || admin[0].phone_number,
-          address: req.body.address || admin[0].address,
+  Admin.checkEmailForUpdating(req.params.id, req.body.email)
+    .then(([rows]) => {
+      if (rows.length) {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This email already registered",
         });
-        updatedAdmin
-          .update(req.params.id)
-          .then(([result]) => {
-            if (result.affectedRows === 1) {
-              return res.status(200).json({
-                code: 200,
-                success: true,
-                message: "Successfully updated",
+      } else {
+        Admin.getAdminById(req.params.id)
+          .then(([admin]) => {
+            let salt;
+            let hash;
+            if (req.body.password) {
+              salt = crypto.randomBytes(32).toString("hex");
+              hash = crypto
+                .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
+                .toString("hex");
+            }
+            if (admin.length) {
+              const updatedAdmin = new Admin({
+                first_name: req.body.first_name || admin[0].first_name,
+                last_name: req.body.last_name || admin[0].last_name,
+                email: req.body.email || admin[0].email,
+                hash: hash || admin[0].hash,
+                salt: salt || admin[0].salt,
+                nic_number: req.body.nic_number || admin[0].nic_number,
+                phone_number: req.body.phone_number || admin[0].phone_number,
+                address: req.body.address || admin[0].address,
               });
+              updatedAdmin
+                .update(req.params.id)
+                .then(([result]) => {
+                  if (result.affectedRows === 1) {
+                    return res.status(200).json({
+                      code: 200,
+                      success: true,
+                      message: "Successfully updated",
+                    });
+                  } else {
+                    return res.status(200).json({
+                      code: 200,
+                      success: false,
+                      message: "Please try again",
+                    });
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                  return res.status(200).json({
+                    code: 200,
+                    success: false,
+                    message: error.message,
+                  });
+                });
             } else {
               return res.status(200).json({
                 code: 200,
                 success: false,
-                message: "Please try again",
+                message: "This admin not found",
               });
             }
           })
@@ -347,12 +378,6 @@ exports.update = (req, res) => {
               message: error.message,
             });
           });
-      } else {
-        return res.status(200).json({
-          code: 200,
-          success: false,
-          message: "This admin not found",
-        });
       }
     })
     .catch((error) => {

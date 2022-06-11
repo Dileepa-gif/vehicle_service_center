@@ -70,7 +70,7 @@ export default function Login(props) {
                       })
                     }
                     required
-                    maxlength="250"
+                    maxLength="250"
                   />
                   <label>Email</label>
                 </div>
@@ -92,8 +92,8 @@ export default function Login(props) {
                       })
                     }
                     required
-                    minlength="8"
-                    maxlength="25"
+                    minLength="8"
+                    maxLength="25"
                   />
 
                   <label>Password</label>

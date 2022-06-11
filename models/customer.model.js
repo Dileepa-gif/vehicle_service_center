@@ -27,6 +27,11 @@ module.exports = class Customer {
         return db.execute(query);
     }
 
+    static checkEmailForUpdating(id, email) {
+        const query = `SELECT * FROM customer WHERE email = '${email}' AND NOT id = '${id}'`;
+        return db.execute(query);
+    }
+
     static delete(id) {
         const query = `DELETE FROM customer WHERE id = '${id}'`;
         return db.execute(query);
@@ -40,8 +45,8 @@ module.exports = class Customer {
 
 
     update(id) {
-        const query = `UPDATE customer set first_name = ?, last_name = ?, hash = ?, salt = ?,  contact_number = ?, nic_number = ?,  is_completed = ?  WHERE id = ? `;
-        return db.execute(query, [this.first_name, this.last_name, this.hash, this.salt, this.contact_number, this.nic_number,  this.is_completed, id]);
+        const query = `UPDATE customer set first_name = ?, last_name = ?, email = ?, hash = ?, salt = ?,  contact_number = ?, nic_number = ?,  is_completed = ?  WHERE id = ? `;
+        return db.execute(query, [this.first_name, this.last_name, this.email, this.hash, this.salt, this.contact_number, this.nic_number,  this.is_completed, id]);
     }
 
 };

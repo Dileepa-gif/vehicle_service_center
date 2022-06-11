@@ -143,8 +143,8 @@ export default function EditEmployee(props) {
                         }
                         placeholder="First name"
                         required
-                        minlength="2"
-                        maxlength="250"
+                        minLength="2"
+                        maxLength="250"
                       />
                     </div>
                   </div>
@@ -165,8 +165,8 @@ export default function EditEmployee(props) {
                         }
                         placeholder="Last name"
                         required
-                        minlength="2"
-                        maxlength="250"
+                        minLength="2"
+                        maxLength="250"
                       />
                     </div>
                   </div>
@@ -189,7 +189,7 @@ export default function EditEmployee(props) {
                     }
                     placeholder="Email"
                     required
-                    maxlength="250"
+                    maxLength="250"
                   />
                 </div>
 
@@ -208,9 +208,8 @@ export default function EditEmployee(props) {
                       })
                     }
                     placeholder="Password"
-                    required
-                    minlength="8"
-                    maxlength="25"
+                    minLength="8"
+                    maxLength="25"
                   />
                 </div>
 
@@ -230,8 +229,8 @@ export default function EditEmployee(props) {
                     }
                     placeholder="NIC"
                     required
-                    minlength="10"
-                    maxlength="12"
+                    minLength="10"
+                    maxLength="12"
                   />
                 </div>
 
@@ -251,8 +250,8 @@ export default function EditEmployee(props) {
                     }
                     placeholder="Phone Number"
                     required
-                    minlength="10"
-                    maxlength="12"
+                    minLength="10"
+                    maxLength="12"
                   />
                 </div>
 
@@ -272,8 +271,8 @@ export default function EditEmployee(props) {
                     }
                     placeholder="Address"
                     required
-                    minlength="2"
-                    maxlength="250"
+                    minLength="2"
+                    maxLength="250"
                   />
                 </div>
 

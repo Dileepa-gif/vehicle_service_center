@@ -9,7 +9,6 @@ const appointmentValidation = (data) => {
   const schema = Joi.object({
     date: Joi.date().format("YYYY-MM-DD").required(),
     vehicle_id: Joi.number().required(),
-    customer_id: Joi.number().required(),
     time_slot_id: Joi.number().required(),
     upgrade_type_id: Joi.number().required(),
   });
