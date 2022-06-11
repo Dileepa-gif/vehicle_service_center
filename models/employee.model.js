@@ -27,6 +27,11 @@ module.exports = class Employee {
         return db.execute(query);
     }
 
+    static checkEmailForUpdating(id, email) {
+        const query = `SELECT * FROM employee WHERE email = '${email}' AND NOT id = '${id}'`;
+        return db.execute(query);
+    }
+
     static delete(id) {
         const query = `DELETE FROM employee WHERE id = '${id}'`;
         return db.execute(query);

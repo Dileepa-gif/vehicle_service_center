@@ -46,26 +46,24 @@ export default function EditAdvertisement(props) {
         })
         .then((res) => {
           if (res.data.success) {
-            // console.log(res.data.data.images[0].image)
             setAdvertisementData({
-              id: res.data.data.id,
-              vehicle_id: res.data.data.vehicle_id,
-              brand: res.data.data.brand,
-              model: res.data.data.model,
-              thumbnail: res.data.data.thumbnail,
-              manufactured_year: res.data.data.manufactured_year,
-              vehicle_condition: res.data.data.vehicle_condition,
-              transmission: res.data.data.transmission,
-              fuel_type: res.data.data.fuel_type,
-              engine_capacity: res.data.data.engine_capacity,
-              mileage: res.data.data.mileage,
-              seller_name: res.data.data.seller_name,
-              city: res.data.data.city,
-              price: res.data.data.price,
-              contact_number: res.data.data.contact_number,
-              is_sold: res.data.data.is_sold,
-              created_at: res.data.data.created_at,
-              images: res.data.data.images,
+              id: res.data.data[0].id,
+              vehicle_id: res.data.data[0].vehicle_id,
+              brand: res.data.data[0].brand,
+              model: res.data.data[0].model,
+              thumbnail: res.data.data[0].thumbnail,
+              manufactured_year: res.data.data[0].manufactured_year,
+              vehicle_condition: res.data.data[0].vehicle_condition,
+              transmission: res.data.data[0].transmission,
+              fuel_type: res.data.data[0].fuel_type,
+              engine_capacity: res.data.data[0].engine_capacity,
+              mileage: res.data.data[0].mileage,
+              seller_name: res.data.data[0].seller_name,
+              city: res.data.data[0].city,
+              price: res.data.data[0].price,
+              contact_number: res.data.data[0].contact_number,
+              is_sold: res.data.data[0].is_sold,
+              created_at: res.data.data[0].created_at,
             });
           } else {
             setMessage({
@@ -77,10 +75,10 @@ export default function EditAdvertisement(props) {
         })
         .catch((error) => {
           console.log("error = " + error);
-          window.location = "/";
+          // window.location = "/";
         });
     } else {
-      window.location = "/";
+      // window.location = "/";
     }
   }, []);
 
@@ -145,14 +143,6 @@ export default function EditAdvertisement(props) {
             <div className="col">
               <img src={advertisementData.thumbnail} className="large_img" />
             </div>
-            {advertisementData.images.length > 1 &&
-              advertisementData.images.map((image, i) => {
-                return (
-                  <div className="col">
-                    <img src={image.image} className="large_img" />
-                  </div>
-                );
-              })}
           </div>
 
           <div className="row">

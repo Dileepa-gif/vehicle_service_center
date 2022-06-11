@@ -8,11 +8,10 @@ const JoiDate = require("@hapi/joi-date");
 const Joi = JoiBase.extend(JoiDate);
 const { customerForgotPasswordSender } = require("../util/emailService");
 
-
 const customerSingUpValidation = (data) => {
   const schema = Joi.object({
     email: Joi.string().required().max(250).email(),
-    password: Joi.string().required().min(8).max(25)
+    password: Joi.string().required().min(8).max(25),
   });
   return schema.validate(data);
 };
@@ -26,55 +25,39 @@ const customerRegisterValidation = (data) => {
       .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
       .min(10)
       .max(12)
-      .message("Phone number should be corrected"),
+      .messages({
+        "string.min": "Must have at least 10 characters",
+        "object.regex": "Must have at least 12 characters",
+        "string.pattern.base": "Phone number should be corrected",
+      }),
     nic_number: Joi.string().required().min(10).max(12),
-  });
-  return schema.validate(data);
-};
-
-const customerUpdateValidation1 = (data) => {
-  const schema = Joi.object({
-    first_name: Joi.string().required().min(2).max(250),
-    last_name: Joi.string().required().min(2).max(250),
-    email: Joi.string().required().max(250).email(),
-    contact_number: Joi.string()
-      .required()
-      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
-      .min(10)
-      .max(12)
-      .message("Phone number should be corrected"),
-    nic_number: Joi.string().required().min(10).max(12),
-  });
-  return schema.validate(data);
-};
-
-const customerUpdateValidation2 = (data) => {
-  const schema = Joi.object({
-    first_name: Joi.string().required().min(2).max(250),
-    last_name: Joi.string().required().min(2).max(250),
-    email: Joi.string().required().max(250).email(),
-    password: Joi.string().required().min(8).max(25),
-    contact_number: Joi.string()
-      .required()
-      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
-      .min(10)
-      .max(12)
-      .message("Phone number should be corrected"),
-    nic_number: Joi.string().required().min(10).max(12),
-  });
-  return schema.validate(data);
-};
-
-
-const vehicleValidation = (data) => {
-  const schema = Joi.object({
     vehicle_type: Joi.string().required().min(2).max(250),
-    vehicle_number: Joi.string().required().min(4).max(8)
+    vehicle_number: Joi.string().required().min(4).max(8),
+    fcm_token: Joi.string().required(),
   });
   return schema.validate(data);
 };
 
-
+const customerUpdateValidation = (data) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required().min(2).max(250),
+    last_name: Joi.string().required().min(2).max(250),
+    email: Joi.string().required().max(250).email(),
+    password: Joi.string().allow(null, "").min(8).max(25),
+    contact_number: Joi.string()
+      .required()
+      .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
+      .min(10)
+      .max(12)
+      .messages({
+        "string.min": "Must have at least 10 characters",
+        "object.regex": "Must have at least 12 characters",
+        "string.pattern.base": "Phone number should be corrected",
+      }),
+    nic_number: Joi.string().required().min(10).max(12),
+  });
+  return schema.validate(data);
+};
 
 exports.signUp = (req, res) => {
   Customer.getCustomerByEmail(req.body.email)
@@ -163,7 +146,6 @@ exports.register = (req, res) => {
   Customer.getCustomerById(req.params.id)
     .then(([customer]) => {
       if (customer.length) {
-
         const { error } = customerRegisterValidation(req.body);
         if (error)
           return res.status(200).json({
@@ -171,7 +153,6 @@ exports.register = (req, res) => {
             success: false,
             message: error.details[0].message,
           });
-
 
         const updatedCustomer = new Customer({
           first_name: req.body.first_name || customer[0].first_name,
@@ -188,7 +169,10 @@ exports.register = (req, res) => {
             if (result.affectedRows === 1) {
               FCMToken.deleteByFCMToken(req.body.fcm_token)
                 .then(([deletedFCMToken]) => {
-                  console.log(" deletedFCMToken -> affectedRows = ", deletedFCMToken.affectedRows);
+                  console.log(
+                    " deletedFCMToken -> affectedRows = ",
+                    deletedFCMToken.affectedRows
+                  );
                   const newFCMToken = new FCMToken({
                     customer_id: req.params.id,
                     fcm_token: req.body.fcm_token,
@@ -197,14 +181,11 @@ exports.register = (req, res) => {
                   newFCMToken
                     .create()
                     .then(([createdFCMToken]) => {
-                      console.log(" createdFCMToken -> affectedRows = ", createdFCMToken.affectedRows);
-                      const { error } = vehicleValidation(req.body);
-                      if (error)
-                        return res.status(200).json({
-                          code: 200,
-                          success: false,
-                          message: error.details[0].message,
-                        });
+                      console.log(
+                        " createdFCMToken -> affectedRows = ",
+                        createdFCMToken.affectedRows
+                      );
+
                       const newVehicle = new Vehicle({
                         customer_id: req.params.id,
                         vehicle_type: req.body.vehicle_type,
@@ -303,43 +284,48 @@ exports.login = async function (req, res) {
 
         if (customer[0].hash === hashVerify) {
           FCMToken.deleteByFCMToken(req.body.fcm_token)
-          .then(([deletedFCMToken]) => {
-            console.log(" deletedFCMToken -> affectedRows = ", deletedFCMToken.affectedRows);
-            const newFCMToken = new FCMToken({
-              customer_id: customer[0].id,
-              fcm_token: req.body.fcm_token,
-            });
-
-            newFCMToken
-              .create()
-              .then(([createdFCMToken]) => {
-                console.log(" createdFCMToken -> affectedRows = ", createdFCMToken.affectedRows);
-                const tokenObject = auth.issueJWT(customer[0], "CUSTOMER");
-
-                res.status(200).json({
-                  code: 200,
-                  success: true,
-                  token: tokenObject,
-                });
-
-              })
-              .catch((error) => {
-                console.log(error);
-                return res.status(200).json({
-                  code: 200,
-                  success: false,
-                  message: error.message,
-                });
+            .then(([deletedFCMToken]) => {
+              console.log(
+                " deletedFCMToken -> affectedRows = ",
+                deletedFCMToken.affectedRows
+              );
+              const newFCMToken = new FCMToken({
+                customer_id: customer[0].id,
+                fcm_token: req.body.fcm_token,
               });
-          })
-          .catch((error) => {
-            console.log(error);
-            return res.status(200).json({
-              code: 200,
-              success: false,
-              message: error.message,
+
+              newFCMToken
+                .create()
+                .then(([createdFCMToken]) => {
+                  console.log(
+                    " createdFCMToken -> affectedRows = ",
+                    createdFCMToken.affectedRows
+                  );
+                  const tokenObject = auth.issueJWT(customer[0], "CUSTOMER");
+
+                  res.status(200).json({
+                    code: 200,
+                    success: true,
+                    token: tokenObject,
+                  });
+                })
+                .catch((error) => {
+                  console.log(error);
+                  return res.status(200).json({
+                    code: 200,
+                    success: false,
+                    message: error.message,
+                  });
+                });
+            })
+            .catch((error) => {
+              console.log(error);
+              return res.status(200).json({
+                code: 200,
+                success: false,
+                message: error.message,
+              });
             });
-          });
         } else {
           res.status(200).json({
             code: 200,
@@ -499,56 +485,74 @@ exports.update = (req, res) => {
     });
   }
 
-  const { error } = customerUpdateValidation1(req.body);
+  const { error } = customerUpdateValidation(req.body);
   if (error)
     return res.status(200).json({
       code: 200,
       success: false,
       message: error.details[0].message,
     });
-  Customer.getCustomerById(req.params.id)
-    .then(([customer]) => {
-      let salt;
-      let hash;
-      if (req.body.password) {
-
-        const { error } = customerUpdateValidation2(req.body);
-        if (error)
-          return res.status(200).json({
-            code: 200,
-            success: false,
-            message: error.details[0].message,
-          });
-
-        salt = crypto.randomBytes(32).toString("hex");
-        hash = crypto
-          .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
-          .toString("hex");
-      }
-      if (customer.length) {
-        const updatedCustomer = new Customer({
-          first_name: req.body.first_name || customer[0].first_name,
-          last_name: req.body.last_name || customer[0].last_name,
-          hash: hash || customer[0].hash,
-          salt: salt || customer[0].salt,
-          contact_number: req.body.contact_number || customer[0].contact_number,
-          nic_number: req.body.nic_number || customer[0].nic_number,
-          is_completed: 1,
+  Customer.checkEmailForUpdating(req.params.id, req.body.email)
+    .then(([rows]) => {
+      if (rows.length) {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          message: "This email already registered",
         });
-        updatedCustomer
-          .update(req.params.id)
-          .then(([result]) => {
-            if (result.affectedRows === 1) {
-              return res.status(200).json({
-                code: 200,
-                success: true,
-                message: "Successfully updated",
+      } else {
+        Customer.getCustomerById(req.params.id)
+          .then(([customer]) => {
+            let salt;
+            let hash;
+            if (req.body.password) {
+              salt = crypto.randomBytes(32).toString("hex");
+              hash = crypto
+                .pbkdf2Sync(req.body.password, salt, 10000, 64, "sha512")
+                .toString("hex");
+            }
+            if (customer.length) {
+              const updatedCustomer = new Customer({
+                first_name: req.body.first_name || customer[0].first_name,
+                last_name: req.body.last_name || customer[0].last_name,
+                email: req.body.email || customer[0].email,
+                hash: hash || customer[0].hash,
+                salt: salt || customer[0].salt,
+                contact_number:
+                  req.body.contact_number || customer[0].contact_number,
+                nic_number: req.body.nic_number || customer[0].nic_number,
+                is_completed: 1,
               });
+              updatedCustomer
+                .update(req.params.id)
+                .then(([result]) => {
+                  if (result.affectedRows === 1) {
+                    return res.status(200).json({
+                      code: 200,
+                      success: true,
+                      message: "Successfully updated",
+                    });
+                  } else {
+                    return res.status(200).json({
+                      code: 200,
+                      success: false,
+                      message: "Please try again",
+                    });
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                  return res.status(200).json({
+                    code: 200,
+                    success: false,
+                    message: error.message,
+                  });
+                });
             } else {
               return res.status(200).json({
                 code: 200,
                 success: false,
-                message: "Please try again",
+                message: "This customer not found",
               });
             }
           })
@@ -560,12 +564,6 @@ exports.update = (req, res) => {
               message: error.message,
             });
           });
-      } else {
-        return res.status(200).json({
-          code: 200,
-          success: false,
-          message: "This customer not found",
-        });
       }
     })
     .catch((error) => {

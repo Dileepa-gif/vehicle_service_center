@@ -110,8 +110,8 @@ export default function UpgradeTypeList(props) {
                     }
                     placeholder="Name"
                     required
-                    minlength="2"
-                    maxlength="250"
+                    minLength="2"
+                    maxLength="250"
                   />
                 </div>
                 <div className="form-group">
@@ -130,7 +130,7 @@ export default function UpgradeTypeList(props) {
                     }
                     placeholder="Description"
                     required
-                    maxlength="250"
+                    maxLength="250"
                   />
                 </div>
 

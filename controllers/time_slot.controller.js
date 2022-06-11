@@ -6,6 +6,8 @@ const Joi = JoiBase.extend(JoiDate);
 
 const timeSlotValidation = (data) => {
   const schema = Joi.object({
+    start: Joi.number().allow(null, ''),
+    end: Joi.number().allow(null, ''),
     number_of_vehicles: Joi.number().required()
   });
   return schema.validate(data);
