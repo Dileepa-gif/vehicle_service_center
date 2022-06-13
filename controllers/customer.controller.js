@@ -166,6 +166,7 @@ exports.register = (req, res) => {
         const updatedCustomer = new Customer({
           first_name: req.body.first_name || customer[0].first_name,
           last_name: req.body.last_name || customer[0].last_name,
+          email: customer[0].email,
           hash: customer[0].hash,
           salt: customer[0].salt,
           contact_number: req.body.contact_number || customer[0].contact_number,
