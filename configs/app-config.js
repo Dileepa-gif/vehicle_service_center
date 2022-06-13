@@ -9,6 +9,7 @@ require("dotenv").config({ path: ".env"});
 //     dbPw: ""
 // };
 
+
 module.exports = {
     serverPort: process.env.PORT || 8000,
     dbHost: "td5l74lo6615qq42.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
