@@ -290,8 +290,8 @@ exports.pay = (req, res) => {
       success: false,
       message: error.details[0].message,
     });
-
-  Service.pay(req.params.id, req.body.price, req.body.payment_method)
+   console.log("Payment amount is " +req.body.price);
+  Service.pay(req.params.id, req.body.payment_method)
     .then(([result]) => {
       if (result.affectedRows === 1) {
         return res.status(200).json({
