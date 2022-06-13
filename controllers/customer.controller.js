@@ -38,6 +38,15 @@ const customerRegisterValidation = (data) => {
   return schema.validate(data);
 };
 
+const customerLoginValidation = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().required().max(250).email(),
+    password: Joi.string().required().min(8).max(25),
+    fcm_token: Joi.string().required(),
+  });
+  return schema.validate(data);
+};
+
 const customerUpdateValidation = (data) => {
   const schema = Joi.object({
     first_name: Joi.string().required().min(2).max(250),
@@ -275,6 +284,13 @@ exports.register = (req, res) => {
 };
 
 exports.login = async function (req, res) {
+  const { error } = customerLoginValidation(req.body);
+  if (error)
+    return res.status(200).json({
+      code: 200,
+      success: false,
+      message: error.details[0].message,
+    });
   Customer.getCustomerByEmail(req.body.email)
     .then(([customer]) => {
       if (customer.length) {
