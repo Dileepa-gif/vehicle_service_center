@@ -107,9 +107,9 @@ module.exports = class Service {
         return db.execute(query, ["Cash", id]);
     }
 
-    static pay(id, price, payment_method){
-        const query = `UPDATE service s INNER JOIN appointment a ON s.appointment_id = a.id INNER JOIN upgrade_type ut ON a.upgrade_type_id = ut.id SET s.is_paid = 1, s.payment_method = ? WHERE s.id = ? AND s.is_done = 1 AND ut.price = ((ut.price*s.discount/100)+ ?);`;
-        return db.execute(query, [payment_method, id, price]);
+    static pay(id, payment_method){
+        const query = `UPDATE service s INNER JOIN appointment a ON s.appointment_id = a.id INNER JOIN upgrade_type ut ON a.upgrade_type_id = ut.id SET s.is_paid = 1, s.payment_method = ? WHERE s.id = ? AND s.is_done = 1 ;`;
+        return db.execute(query, [payment_method, id]);
     }
 
     static addRating(id, rating){
