@@ -6,6 +6,7 @@ import Sidebar from "../Partials/sidebar";
 export default function VehicleList(props) {
   const [user, setUser] = useState("");
   const [vehicles, setVehicles] = useState([]);
+  const [searchedVal, setSearchedVal] = useState("");
   const [message, setMessage] = useState({
     status: false,
     success: "",
@@ -43,30 +44,6 @@ export default function VehicleList(props) {
     }
   }, []);
 
-  // const deleteVehicle = (id) => {
-  //   axios
-  //     .delete(`vehicle/delete/${id}`, {
-  //       headers: {
-  //         Authorization: user.token,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         window.location.reload(false);
-  //       } else {
-  //         setMessage({
-  //           status: true,
-  //           success: false,
-  //           message: res.data.message,
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log("error = " + error);
-  //       window.location = "/all_vehicle_list";
-  //     });
-  // };
-
   return (
     <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
       <Sidebar />
@@ -99,6 +76,23 @@ export default function VehicleList(props) {
               ) : null}
             </div>
           </div>
+          <div className="row">
+            <div className="col-6">
+              <div className="form-group">
+                <label htmlFor="email">
+                  Enter the vehicle number for searching
+                </label>
+                <input
+                  type="text"
+                  name="searched_val"
+                  className="form-control"
+                  id="searched_val"
+                  onChange={(e) => setSearchedVal(e.target.value)}
+                  maxLength="250"
+                />
+              </div>
+            </div>
+          </div>
 
           <div className="row">
             <div className="col">
@@ -116,39 +110,49 @@ export default function VehicleList(props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {vehicles.map((vehicle, i) => {
-                      return (
-                        <tr>
-                          <td>{vehicle.id}</td>
-                          <td>{vehicle.vehicle_number}</td>
-                          <td>{vehicle.vehicle_type}</td>
-                          <td>{vehicle.customer_id}</td>
-                          <td>
-                            {vehicle.first_name}{"  "}
-                            {vehicle.last_name}
-                          </td>
-                          <td>{vehicle.contact_number}</td>
-                          <td>
-                            <div
-                              className="btn-group"
-                              role="group"
-                              aria-label="Basic example"
-                            >
-                              <a
-                                href={`/service_history_by_vehicle/${vehicle.id}`}
+                    {vehicles
+                      .filter(
+                        (row) =>
+                          !searchedVal.length ||
+                          row.vehicle_number
+                            .toString()
+                            .toLowerCase()
+                            .includes(searchedVal.toString().toLowerCase())
+                      )
+                      .map((vehicle, i) => {
+                        return (
+                          <tr>
+                            <td>{vehicle.id}</td>
+                            <td>{vehicle.vehicle_number}</td>
+                            <td>{vehicle.vehicle_type}</td>
+                            <td>{vehicle.customer_id}</td>
+                            <td>
+                              {vehicle.first_name}
+                              {"  "}
+                              {vehicle.last_name}
+                            </td>
+                            <td>{vehicle.contact_number}</td>
+                            <td>
+                              <div
+                                className="btn-group"
+                                role="group"
+                                aria-label="Basic example"
                               >
-                                <button
-                                  type="button"
-                                  className="btn btn-secondary"
+                                <a
+                                  href={`/service_history_by_vehicle/${vehicle.id}`}
                                 >
-                                  Show
-                                </button>
-                              </a>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                                  <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                  >
+                                    Show
+                                  </button>
+                                </a>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
