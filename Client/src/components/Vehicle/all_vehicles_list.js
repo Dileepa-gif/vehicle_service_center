@@ -80,7 +80,7 @@ export default function VehicleList(props) {
             <div className="col-6">
               <div className="form-group">
                 <label htmlFor="email">
-                  Enter the vehicle number for searching
+                  Enter the vehicle number or customer name for searching
                 </label>
                 <input
                   type="text"
@@ -115,6 +115,14 @@ export default function VehicleList(props) {
                         (row) =>
                           !searchedVal.length ||
                           row.vehicle_number
+                            .toString()
+                            .toLowerCase()
+                            .includes(searchedVal.toString().toLowerCase())||
+                          row.first_name
+                            .toString()
+                            .toLowerCase()
+                            .includes(searchedVal.toString().toLowerCase())||
+                          row.last_name
                             .toString()
                             .toLowerCase()
                             .includes(searchedVal.toString().toLowerCase())
