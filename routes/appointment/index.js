@@ -10,6 +10,7 @@ routes.get('/getAllAppointments', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTO
 routes.get('/getNotArrivedAppointments', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getNotArrivedAppointments);
 routes.get('/getAppointmentsRelevantToToday', auth.authMiddleware(["ADMIN","EMPLOYEE"]), system_status.activation, appointmentController.getAppointmentsRelevantToToday);
 routes.get('/getAppointmentById/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getAppointmentById);
+routes.get('/getAppointmentByCustomerId/:id', auth.authMiddleware(["ADMIN","EMPLOYEE","CUSTOMER"]), system_status.activation, appointmentController.getAppointmentByCustomerId);
 routes.get('/changeStatus/:id', auth.authMiddleware(["EMPLOYEE"]), system_status.activation, appointmentController.changeStatus);
 
 module.exports = routes;

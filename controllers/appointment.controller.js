@@ -192,6 +192,37 @@ exports.getAppointmentById = (req, res) => {
     });
 };
 
+
+exports.getAppointmentByCustomerId = (req, res) => {
+  Appointment.getAppointmentByCustomerId(req.params.id)
+    .then(([rows]) => {
+      if (rows.length) {
+        return res.status(200).json({
+          code: 200,
+          success: true,
+          data: rows,
+          message: "Data received",
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          success: false,
+          data: rows,
+          message: "Data not found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(200).json({
+        code: 200,
+        success: false,
+        message: error.message,
+      });
+    });
+};
+
+
 exports.getAppointmentsRelevantToToday = (req, res) => {
   var dateTime = require("node-datetime");
   var dt = dateTime.create();
