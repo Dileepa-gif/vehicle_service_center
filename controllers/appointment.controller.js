@@ -193,8 +193,8 @@ exports.getAppointmentById = (req, res) => {
 };
 
 
-exports.getAppointmentByCustomerId = (req, res) => {
-  Appointment.getAppointmentByCustomerId(req.params.id)
+exports.getAppointmentsByCustomerId = (req, res) => {
+  Appointment.getAppointmentsByCustomerId(req.params.id)
     .then(([rows]) => {
       if (rows.length) {
         return res.status(200).json({
