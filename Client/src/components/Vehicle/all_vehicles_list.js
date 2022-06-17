@@ -80,7 +80,7 @@ export default function VehicleList(props) {
             <div className="col-6">
               <div className="form-group">
                 <label htmlFor="email">
-                  Enter the vehicle number or custom name for searching
+                  Enter the vehicle number or customer name for searching
                 </label>
                 <input
                   type="text"
