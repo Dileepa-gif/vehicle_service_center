@@ -77,11 +77,15 @@ export default function VehicleList(props) {
             </div>
           </div>
           <div className="row">
+            <div className="col">
+              <label htmlFor="searched_val">
+                    Enter the vehicle number or customer name for searching
+              </label>
+            </div>
+          </div>
+          <div className="row">
             <div className="col-6">
               <div className="form-group">
-                <label htmlFor="email">
-                  Enter the vehicle number or customer name for searching
-                </label>
                 <input
                   type="text"
                   name="searched_val"
