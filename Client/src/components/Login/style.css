@@ -1,14 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:600&display=swap');
 @import url('https://kit.fontawesome.com/a81368914c.js');
 
-.login-body {
+body {
     font-family: 'Poppins', sans-serif;
     background-image: url("/images/main.jpg");
-	height: 790px;
 }
 
 .topic{
-	font-size: 70px;
+	font-size:70px;
 	font-weight: 600;
 	background-image: linear-gradient(to left, #daa608, #362106);
 	color: transparent;
@@ -101,7 +100,7 @@ a:hover{
 	border: none;
 	background-image: linear-gradient(to right, rgb(98, 72, 7), rgb(248, 192, 51), rgb(240, 217, 9));
 	background-size: 200%;
-	font-size: 1.2rem;
+	font-size:medium;
 	color: #fff;
 	font-family: 'Poppins', sans-serif;
 	text-transform: uppercase;
@@ -156,6 +155,8 @@ a:hover{
 
 .topic-col{
 	margin: 25px;
+	height: auto;
+	width:fit-content;
 	border-radius: 8px;
 	background: rgb(246,245,242);
 	background: linear-gradient(90deg, rgba(246,245,242,0.5889706224286589) 0%, rgba(0,0,0,0.7738445720084909) 100%);

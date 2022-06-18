@@ -44,7 +44,7 @@ export default function Login(props) {
   return (
     <div className="container-fluid login-body">
       <div className="row d-flex justify-content-center">
-        <div className="col-6 d-flex justify-content-center topic-col">
+        <div className="col d-flex justify-content-center topic-col">
           <h1 className="topic">VEHICLE SERVICE CENTER</h1>
         </div>
       </div>
