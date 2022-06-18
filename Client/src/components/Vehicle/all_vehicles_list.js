@@ -45,7 +45,7 @@ export default function VehicleList(props) {
   }, []);
 
   return (
-    <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
+    <div className="wrapper">
       <Sidebar />
 
       <div id="content">

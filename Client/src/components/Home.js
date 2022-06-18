@@ -15,7 +15,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">
+    <div className="wrapper">
+    {/* <div className="wrapper my-custom-scrollbar my-custom-scrollbar-primary">*/}
       <Sidebar />
 
       <div id="content">
