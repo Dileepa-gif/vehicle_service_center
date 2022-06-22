@@ -124,13 +124,13 @@ export default function AdvertisementList(props) {
                       return (
                         <tr>
                           <td>{advertisement.id}</td>
+                          <td>{advertisement.vehicle_id}</td>
                           <td>
                             <img
                               src={advertisement.thumbnail}
                               className="small_img"
                             />
                           </td>
-                          <td>{advertisement.brand}</td>
                           <td>{advertisement.brand}</td>
                           <td>{advertisement.model}</td>
                           <td>{advertisement.manufactured_year}</td>
