@@ -12,11 +12,11 @@ require("dotenv").config({ path: ".env"});
 
 module.exports = {
     serverPort: process.env.PORT || 8000,
-    dbHost: "en1ehf30yom7txe7.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    dbName: "rr7qwbtt57wjmxt3",
+    dbHost: "n4m3x5ti89xl6czh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+    dbName: "f43hd022z80154su",
     dbPort: "3306",
-    dbUserName: "n8zmewpcn62gcv7f",
-    dbPw: "q3p0y23by3rt8orn"
+    dbUserName: "a0e6eh5zw9x47qhl",
+    dbPw: "xmq6p4eds4isdyiq"
 };
 
 
