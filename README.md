@@ -1,2 +1,4 @@
-# EJS-tutorial
-EJS simply stands for Embedded Javascript. It is a simple templating language/engine that lets its user generate HTML with plain javascript. EJS is mostly useful whenever you have to output HTML with a lot of javascript.
+# vehicle_service_center
+It is a web portal for a vehicle service center. A customer can use this
+method to register, create an appointment, select a service type,
+maintain a service history, make payments, and sell the vehicles.
